@@ -1,44 +1,41 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PlanningForm from "@/components/PlanningForm";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { PlanningHeader } from "@/components/planning/PlanningHeader";
+import { PlanningTable } from "@/components/planning/PlanningTable";
 
 const Planning = () => {
-  const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [items] = useState([
+    {
+      id: 1,
+      item: "MacBook Pro",
+      category: "electronics",
+      estimatedValue: "12000",
+      priority: "Alta",
+      expectedDate: "2024-06-01",
+      status: "planned",
+      savedAmount: "3000",
+    },
+    // Add more mock items as needed
+  ]);
 
   return (
-    <div className="container max-w-md mx-auto px-4 pb-20">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Planejamento</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Item
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Novo Item</DialogTitle>
-            </DialogHeader>
-            <PlanningForm onSuccess={() => setOpen(false)} />
-          </DialogContent>
-        </Dialog>
-      </div>
+    <div className="container mx-auto py-4 space-y-4">
+      <PlanningHeader onAddNew={() => setIsDialogOpen(true)} />
       
-      <Card className="p-4">
-        <p className="text-center text-muted-foreground">
-          Nenhum item planejado
-        </p>
-      </Card>
+      <div className="bg-white p-4 rounded-lg shadow-sm">
+        <PlanningTable items={items} />
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Novo Planejamento</DialogTitle>
+          </DialogHeader>
+          <PlanningForm onSuccess={() => setIsDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

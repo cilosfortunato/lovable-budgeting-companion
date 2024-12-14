@@ -10,9 +10,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
 } from "recharts";
+import { AlertTriangle, Clock, CheckCircle2, Users } from "lucide-react";
 
 const mockBarData = [
   { name: "Jan", receitas: 4000, despesas: 2400 },
@@ -22,102 +21,146 @@ const mockBarData = [
 ];
 
 const mockPieData = [
-  { name: "Moradia", value: 2400 },
-  { name: "Alimentação", value: 1398 },
-  { name: "Transporte", value: 9800 },
-  { name: "Lazer", value: 3908 },
+  { name: "Alta", value: 60, color: "#ef4444" },
+  { name: "Média", value: 81, color: "#f59e0b" },
+  { name: "Baixa", value: 12, color: "#22c55e" },
 ];
 
-const mockLineData = [
-  { name: "01/04", saldo: 4000 },
-  { name: "08/04", saldo: 3000 },
-  { name: "15/04", saldo: 5000 },
-  { name: "22/04", saldo: 2780 },
-  { name: "30/04", saldo: 6000 },
-];
-
-const COLORS = ["#6366f1", "#a5b4fc", "#22c55e", "#f59e0b"];
+const COLORS = ["#ef4444", "#f59e0b", "#22c55e"];
 
 const Dashboard = () => {
   return (
-    <div className="container max-w-md mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+    <div className="container max-w-7xl mx-auto px-4 py-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        
+        <div className="flex gap-4">
+          <select className="px-4 py-2 border rounded-lg text-sm">
+            <option>Filtrar por Cliente</option>
+          </select>
+          <select className="px-4 py-2 border rounded-lg text-sm">
+            <option>Filtrar por Responsável</option>
+          </select>
+          <select className="px-4 py-2 border rounded-lg text-sm">
+            <option>Filtrar por Período</option>
+          </select>
+        </div>
+      </div>
       
-      {/* Saldo Card */}
-      <Card className="p-6 mb-6">
-        <h2 className="text-sm text-gray-600 mb-1">Saldo Total</h2>
-        <p className="text-3xl font-bold text-primary">R$ 12.540,00</p>
-      </Card>
-
-      {/* Resumo do Mês */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <Card className="p-4">
-          <h3 className="text-sm text-gray-600 mb-1">Receitas</h3>
-          <p className="text-lg font-semibold text-success">R$ 8.500,00</p>
+      {/* Cards Informativos */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Card className="p-4 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-red-500" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Alta Prioridade</p>
+            <p className="text-2xl font-bold">60</p>
+          </div>
         </Card>
-        <Card className="p-4">
-          <h3 className="text-sm text-gray-600 mb-1">Despesas</h3>
-          <p className="text-lg font-semibold text-destructive">R$ 5.960,00</p>
+
+        <Card className="p-4 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
+            <Clock className="w-6 h-6 text-yellow-500" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Tickets Abertos</p>
+            <p className="text-2xl font-bold">27</p>
+          </div>
+        </Card>
+
+        <Card className="p-4 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+            <CheckCircle2 className="w-6 h-6 text-green-500" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Resolvidos</p>
+            <p className="text-2xl font-bold">126</p>
+          </div>
+        </Card>
+
+        <Card className="p-4 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+            <Users className="w-6 h-6 text-blue-500" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Total de Tickets</p>
+            <p className="text-2xl font-bold">153</p>
+          </div>
         </Card>
       </div>
 
-      {/* Fluxo de Caixa */}
-      <Card className="p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Fluxo de Caixa</h2>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={mockBarData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="receitas" fill="#22c55e" />
-              <Bar dataKey="despesas" fill="#ef4444" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+      {/* Gráficos */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Distribuição por Status */}
+        <Card className="p-6">
+          <h2 className="text-lg font-semibold mb-4">Distribuição por Status</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={mockBarData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="receitas" fill="#22c55e" />
+                <Bar dataKey="despesas" fill="#ef4444" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
 
-      {/* Despesas por Categoria */}
-      <Card className="p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Despesas por Categoria</h2>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={mockPieData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {mockPieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+        {/* Tickets por Responsável */}
+        <Card className="p-6">
+          <h2 className="text-lg font-semibold mb-4">Tickets por Responsável</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={mockPieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {mockPieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
 
-      {/* Evolução do Saldo */}
-      <Card className="p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Evolução do Saldo</h2>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={mockLineData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="saldo" stroke="#6366f1" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+        {/* Tickets por Prioridade */}
+        <Card className="p-6">
+          <h2 className="text-lg font-semibold mb-4">Tickets por Prioridade</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={mockPieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {mockPieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };

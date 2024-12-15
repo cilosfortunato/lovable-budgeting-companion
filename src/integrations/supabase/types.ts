@@ -225,6 +225,7 @@ export type Database = {
           date: string
           descricao: string | null
           id: string
+          observacoes: string | null
           parcelas: number | null
           regularidade:
             | Database["public"]["Enums"]["regularidade_parcelas"]
@@ -243,6 +244,7 @@ export type Database = {
           date: string
           descricao?: string | null
           id?: string
+          observacoes?: string | null
           parcelas?: number | null
           regularidade?:
             | Database["public"]["Enums"]["regularidade_parcelas"]
@@ -261,6 +263,7 @@ export type Database = {
           date?: string
           descricao?: string | null
           id?: string
+          observacoes?: string | null
           parcelas?: number | null
           regularidade?:
             | Database["public"]["Enums"]["regularidade_parcelas"]

@@ -44,7 +44,7 @@ export type Database = {
           },
         ]
       }
-      categories: {
+      categorias: {
         Row: {
           created_at: string
           id: string
@@ -76,25 +76,25 @@ export type Database = {
           },
         ]
       }
-      profiles: {
+      "formas de pgt": {
         Row: {
           created_at: string
-          full_name: string | null
-          id: string
+          forma_pgt: string | null
+          id: number
         }
         Insert: {
           created_at?: string
-          full_name?: string | null
-          id: string
+          forma_pgt?: string | null
+          id?: number
         }
         Update: {
           created_at?: string
-          full_name?: string | null
-          id?: string
+          forma_pgt?: string | null
+          id?: number
         }
         Relationships: []
       }
-      shopping_plans: {
+      planejamento: {
         Row: {
           category_id: string | null
           created_at: string
@@ -142,14 +142,14 @@ export type Database = {
             foreignKeyName: "shopping_plans_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: "categories"
+            referencedRelation: "categorias"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "shopping_plans_subcategory_id_fkey"
             columns: ["subcategory_id"]
             isOneToOne: false
-            referencedRelation: "subcategories"
+            referencedRelation: "subcategorias"
             referencedColumns: ["id"]
           },
           {
@@ -161,95 +161,137 @@ export type Database = {
           },
         ]
       }
-      subcategories: {
+      profiles: {
         Row: {
-          category_id: string | null
           created_at: string
+          familia: string | null
+          full_name: string | null
           id: string
-          name: string
+          senha: string | null
+          telefone: number | null
         }
         Insert: {
-          category_id?: string | null
           created_at?: string
-          id?: string
-          name: string
+          familia?: string | null
+          full_name?: string | null
+          id: string
+          senha?: string | null
+          telefone?: number | null
         }
         Update: {
-          category_id?: string | null
           created_at?: string
+          familia?: string | null
+          full_name?: string | null
           id?: string
-          name?: string
+          senha?: string | null
+          telefone?: number | null
+        }
+        Relationships: []
+      }
+      subcategorias: {
+        Row: {
+          categoria_id: string | null
+          criado: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          categoria_id?: string | null
+          criado: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          categoria_id?: string | null
+          criado?: string
+          id?: string
+          nome?: string
         }
         Relationships: [
           {
             foreignKeyName: "subcategories_category_id_fkey"
-            columns: ["category_id"]
+            columns: ["categoria_id"]
             isOneToOne: false
-            referencedRelation: "categories"
+            referencedRelation: "categorias"
             referencedColumns: ["id"]
           },
         ]
       }
-      transactions: {
+      transacoes: {
         Row: {
           account_id: string | null
-          amount: number
-          attachment_url: string | null
-          category_id: string | null
+          categoria_id: string | null
           created_at: string
           date: string
-          description: string | null
+          descricao: string | null
           id: string
-          subcategory_id: string | null
-          type: string
+          parcelas: number | null
+          regularidade:
+            | Database["public"]["Enums"]["regularidade_parcelas"]
+            | null
+          status: Database["public"]["Enums"]["status_transacoes"]
+          subcategoria_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_despesa"]
+          url_anexos: string | null
           user_id: string | null
+          valor: number
         }
         Insert: {
           account_id?: string | null
-          amount: number
-          attachment_url?: string | null
-          category_id?: string | null
+          categoria_id?: string | null
           created_at?: string
           date: string
-          description?: string | null
+          descricao?: string | null
           id?: string
-          subcategory_id?: string | null
-          type: string
+          parcelas?: number | null
+          regularidade?:
+            | Database["public"]["Enums"]["regularidade_parcelas"]
+            | null
+          status?: Database["public"]["Enums"]["status_transacoes"]
+          subcategoria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_despesa"]
+          url_anexos?: string | null
           user_id?: string | null
+          valor: number
         }
         Update: {
           account_id?: string | null
-          amount?: number
-          attachment_url?: string | null
-          category_id?: string | null
+          categoria_id?: string | null
           created_at?: string
           date?: string
-          description?: string | null
+          descricao?: string | null
           id?: string
-          subcategory_id?: string | null
-          type?: string
+          parcelas?: number | null
+          regularidade?:
+            | Database["public"]["Enums"]["regularidade_parcelas"]
+            | null
+          status?: Database["public"]["Enums"]["status_transacoes"]
+          subcategoria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_despesa"]
+          url_anexos?: string | null
           user_id?: string | null
+          valor?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "transacoes_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transacoes_subcategoria_id_fkey"
+            columns: ["subcategoria_id"]
+            isOneToOne: false
+            referencedRelation: "subcategorias"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "transactions_account_id_fkey"
             columns: ["account_id"]
             isOneToOne: false
             referencedRelation: "accounts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_subcategory_id_fkey"
-            columns: ["subcategory_id"]
-            isOneToOne: false
-            referencedRelation: "subcategories"
             referencedColumns: ["id"]
           },
           {
@@ -269,7 +311,112 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      regularidade_parcelas:
+        | "Único"
+        | "Semanal"
+        | "Trimestral"
+        | "Mensal"
+        | "Anual"
+      status_transacoes: "Pago" | "Programado" | "Atrasado" | "Cancelado"
+      tipo_categoria:
+        | "Automática"
+        | "Moradia"
+        | "Alimentação"
+        | "Saúde"
+        | "Transporte"
+        | "Lazer e Entretenimento"
+        | "Educação e Desenvolvimento"
+        | "Vestuário e Acessórios"
+        | "Bem-Estar e Cuidados Pessoais"
+        | "Serviços Financeiros"
+        | "Comunicação e Tecnologia"
+        | "Casa e Jardim"
+        | "Impostos e Taxas Governamentais"
+        | "Outros/Imprevistos"
+      tipo_despesa: "Receita" | "Despesa"
+      tipo_subcategoria:
+        | "Automática"
+        | "Aluguel"
+        | "Condomínio"
+        | "Água"
+        | "Energia Elétrica"
+        | "IPTU"
+        | "Manutenção Residencial"
+        | "Seguros Residenciais"
+        | "Internet Residencial"
+        | "Supermercado"
+        | "Restaurantes"
+        | "Delivery"
+        | "Refeições no Trabalho"
+        | "Feiras Livres"
+        | "Assinaturas de Cestas de Alimentos"
+        | "Plano de Saúde"
+        | "Medicamentos"
+        | "Consultas"
+        | "Exames"
+        | "Tratamentos Odontológicos"
+        | "Terapias"
+        | "Imunizações"
+        | "Transporte Público"
+        | "Combustível"
+        | "Estacionamento"
+        | "Manutenção do Veículo"
+        | "Pedágios"
+        | "Seguros de Veículos"
+        | "Cinema"
+        | "Viagens"
+        | "Eventos Sociais"
+        | "Cursos de Lazer (culinária, música, dança)"
+        | "Ingressos para shows/teatro"
+        | "Assinaturas de Streaming (filmes, séries, música)"
+        | "Atividades ao Ar Livre"
+        | "Educação Formal (Escola, Faculdade)"
+        | "Cursos de Especialização"
+        | "Livros"
+        | "Material Escolar"
+        | "Aulas Particulares"
+        | "Workshops"
+        | "Treinamentos Profissionais"
+        | "Roupas"
+        | "Calçados"
+        | "Acessórios"
+        | "Serviços de Costura"
+        | "Beleza (cabeleireiro, estética)"
+        | "Academia"
+        | "Massagens"
+        | "Cuidados com a Pele"
+        | "Assinaturas de Apps de Bem-Estar"
+        | "Taxas Bancárias"
+        | "Seguros (Vida, Residência, Saúde, Veicular)"
+        | "Consultoria Financeira"
+        | "Investimentos"
+        | "Previdência Privada"
+        | "Telefonia Móvel"
+        | "TV a Cabo"
+        | "Assinaturas de Software"
+        | "Suporte Técnico"
+        | "Equipamentos Eletrônicos"
+        | "Domínios e Hospedagem"
+        | "Planos de Dados Móveis"
+        | "Materiais de Limpeza"
+        | "Ferramentas"
+        | "Decoração"
+        | "Jardinagem"
+        | "Produtos para Pets"
+        | "Serviços de Limpeza Terceirizados"
+        | "Pequenos Reparos"
+        | "IRPF (Imposto de Renda)"
+        | "IPVA (Imposto sobre Veículos)"
+        | "Licenciamento de Veículos"
+        | "Taxas de Cartório"
+        | "Outras Taxas Oficiais"
+        | "Imprevistos"
+        | "Reparos Emergenciais"
+        | "Presentes"
+        | "Doações"
+        | "Assinaturas Diversas"
+        | "Documentação (passaportes, certidões)"
+        | "Itens Diversos"
     }
     CompositeTypes: {
       [_ in never]: never

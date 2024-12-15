@@ -3,20 +3,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Tables } from "@/integrations/supabase/types";
 
-type ShoppingPlan = Tables<"shopping_plans">;
+type ShoppingPlan = Tables<"planejamento">;
 
 export const usePlanning = () => {
   const queryClient = useQueryClient();
 
   const { data: plans = [], isLoading } = useQuery({
-    queryKey: ["shopping_plans"],
+    queryKey: ["planejamento"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("shopping_plans")
+        .from("planejamento")
         .select(`
           *,
-          category:categories(name),
-          subcategory:subcategories(name)
+          categoria:categorias(name),
+          subcategoria:subcategorias(nome)
         `)
         .order("expected_date", { ascending: true });
 
@@ -28,7 +28,7 @@ export const usePlanning = () => {
   const createPlan = useMutation({
     mutationFn: async (newPlan: Omit<ShoppingPlan, "id" | "created_at">) => {
       const { data, error } = await supabase
-        .from("shopping_plans")
+        .from("planejamento")
         .insert(newPlan)
         .select()
         .single();
@@ -37,7 +37,7 @@ export const usePlanning = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shopping_plans"] });
+      queryClient.invalidateQueries({ queryKey: ["planejamento"] });
       toast.success("Planejamento criado com sucesso!");
     },
     onError: (error) => {

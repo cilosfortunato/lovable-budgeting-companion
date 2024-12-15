@@ -3,21 +3,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Tables } from "@/integrations/supabase/types";
 
-type Transaction = Tables<"transactions">;
+type Transaction = Tables<"transacoes">;
 
 export const useTransactions = () => {
   const queryClient = useQueryClient();
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["transactions"],
+    queryKey: ["transacoes"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("transactions")
+        .from("transacoes")
         .select(`
           *,
           account:accounts(name),
-          category:categories(name),
-          subcategory:subcategories(name)
+          categoria:categorias(name),
+          subcategoria:subcategorias(nome)
         `)
         .order("date", { ascending: false });
 
@@ -29,7 +29,7 @@ export const useTransactions = () => {
   const createTransaction = useMutation({
     mutationFn: async (newTransaction: Omit<Transaction, "id" | "created_at">) => {
       const { data, error } = await supabase
-        .from("transactions")
+        .from("transacoes")
         .insert(newTransaction)
         .select()
         .single();
@@ -38,7 +38,7 @@ export const useTransactions = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transacoes"] });
       toast.success("Transação criada com sucesso!");
     },
     onError: (error) => {
@@ -50,7 +50,7 @@ export const useTransactions = () => {
   const updateTransaction = useMutation({
     mutationFn: async (transaction: Partial<Transaction> & { id: string }) => {
       const { data, error } = await supabase
-        .from("transactions")
+        .from("transacoes")
         .update(transaction)
         .eq("id", transaction.id)
         .select()
@@ -60,7 +60,7 @@ export const useTransactions = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transacoes"] });
       toast.success("Transação atualizada com sucesso!");
     },
     onError: (error) => {
@@ -72,14 +72,14 @@ export const useTransactions = () => {
   const deleteTransaction = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("transactions")
+        .from("transacoes")
         .delete()
         .eq("id", id);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transacoes"] });
       toast.success("Transação excluída com sucesso!");
     },
     onError: (error) => {

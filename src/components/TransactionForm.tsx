@@ -29,6 +29,7 @@ const formSchema = z.object({
   categoria_id: z.string().min(1, "Categoria é obrigatória"),
   account_id: z.string().min(1, "Conta é obrigatória"),
   date: z.string().min(1, "Data é obrigatória"),
+  observacoes: z.string().optional(),
 });
 
 interface TransactionFormProps {
@@ -48,6 +49,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       categoria_id: "",
       account_id: "",
       date: new Date().toISOString().split("T")[0],
+      observacoes: "",
     },
   });
 
@@ -67,6 +69,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       parcelas: 0,
       regularidade: "Único",
       status: "Programado",
+      observacoes: values.observacoes || null,
     });
 
     onSuccess();
@@ -183,6 +186,20 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
               <FormLabel>Descrição</FormLabel>
               <FormControl>
                 <Textarea placeholder="Digite uma descrição" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="observacoes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Observações</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Digite as observações" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

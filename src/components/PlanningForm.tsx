@@ -4,6 +4,8 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { PlanningFormFields } from "./planning/PlanningFormFields";
+import { usePlanning } from "@/hooks/usePlanning";
+import { useUser } from "@supabase/auth-helpers-react";
 
 const formSchema = z.object({
   item: z.string().min(3, "Nome do item deve ter pelo menos 3 caracteres"),
@@ -21,6 +23,9 @@ interface PlanningFormProps {
 }
 
 const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
+  const { createPlan } = usePlanning();
+  const user = useUser();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,15 +40,31 @@ const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!user) return;
+
+    await createPlan.mutateAsync({
+      user_id: user.id,
+      item: values.item,
+      category_id: values.category,
+      description: values.description || null,
+      estimated_value: parseFloat(values.estimatedValue),
+      priority: values.priority,
+      expected_date: values.expectedDate,
+      status: values.status,
+      saved_amount: parseFloat(values.savedAmount),
+      subcategory_id: null,
+    });
+
     onSuccess();
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <PlanningFormFields form={form} />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-h-[70vh] overflow-y-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <PlanningFormFields form={form} />
+        </div>
         <Button type="submit" className="w-full">
           Salvar
         </Button>

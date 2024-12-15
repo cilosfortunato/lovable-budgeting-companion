@@ -35,12 +35,12 @@ const Dashboard = () => {
 
   // Calculate summary data
   const totalIncome = transactions
-    .filter(t => t.type === 'income')
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => t.tipo === 'Receita')
+    .reduce((sum, t) => sum + t.valor, 0);
 
   const totalExpenses = transactions
-    .filter(t => t.type === 'expense')
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => t.tipo === 'Despesa')
+    .reduce((sum, t) => sum + t.valor, 0);
 
   const balance = totalIncome - totalExpenses;
 
@@ -52,16 +52,16 @@ const Dashboard = () => {
     const existingMonth = acc.find(d => d.name === month);
     
     if (existingMonth) {
-      if (transaction.type === 'income') {
-        existingMonth.receitas += transaction.amount;
+      if (transaction.tipo === 'Receita') {
+        existingMonth.receitas += transaction.valor;
       } else {
-        existingMonth.despesas += transaction.amount;
+        existingMonth.despesas += transaction.valor;
       }
     } else {
       acc.push({
         name: month,
-        receitas: transaction.type === 'income' ? transaction.amount : 0,
-        despesas: transaction.type === 'expense' ? transaction.amount : 0,
+        receitas: transaction.tipo === 'Receita' ? transaction.valor : 0,
+        despesas: transaction.tipo === 'Despesa' ? transaction.valor : 0,
       });
     }
     

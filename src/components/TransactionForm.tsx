@@ -23,11 +23,11 @@ import { useTransactions } from "@/hooks/useTransactions";
 import { useUser } from "@supabase/auth-helpers-react";
 
 const formSchema = z.object({
-  type: z.enum(["income", "expense"]),
-  amount: z.string().min(1, "Valor é obrigatório"),
-  description: z.string().min(3, "Descrição deve ter pelo menos 3 caracteres"),
-  category: z.string().min(1, "Categoria é obrigatória"),
-  account: z.string().min(1, "Conta é obrigatória"),
+  tipo: z.enum(["Receita", "Despesa"]),
+  valor: z.string().min(1, "Valor é obrigatório"),
+  descricao: z.string().min(3, "Descrição deve ter pelo menos 3 caracteres"),
+  categoria_id: z.string().min(1, "Categoria é obrigatória"),
+  account_id: z.string().min(1, "Conta é obrigatória"),
   date: z.string().min(1, "Data é obrigatória"),
 });
 
@@ -42,11 +42,11 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: "expense",
-      amount: "",
-      description: "",
-      category: "",
-      account: "",
+      tipo: "Despesa",
+      valor: "",
+      descricao: "",
+      categoria_id: "",
+      account_id: "",
       date: new Date().toISOString().split("T")[0],
     },
   });
@@ -56,14 +56,17 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
 
     await createTransaction.mutateAsync({
       user_id: user.id,
-      type: values.type,
-      amount: parseFloat(values.amount),
-      description: values.description,
-      category_id: values.category,
-      account_id: values.account,
+      tipo: values.tipo,
+      valor: parseFloat(values.valor),
+      descricao: values.descricao,
+      categoria_id: values.categoria_id,
+      account_id: values.account_id,
       date: values.date,
-      subcategory_id: null,
-      attachment_url: null,
+      subcategoria_id: null,
+      url_anexos: null,
+      parcelas: 0,
+      regularidade: "Único",
+      status: "Programado",
     });
 
     onSuccess();
@@ -75,7 +78,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="type"
+            name="tipo"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo</FormLabel>
@@ -86,8 +89,8 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="income">Receita</SelectItem>
-                    <SelectItem value="expense">Despesa</SelectItem>
+                    <SelectItem value="Receita">Receita</SelectItem>
+                    <SelectItem value="Despesa">Despesa</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -97,7 +100,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
 
           <FormField
             control={form.control}
-            name="amount"
+            name="valor"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Valor</FormLabel>
@@ -111,7 +114,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
 
           <FormField
             control={form.control}
-            name="category"
+            name="categoria_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Categoria</FormLabel>
@@ -136,7 +139,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
 
           <FormField
             control={form.control}
-            name="account"
+            name="account_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Conta</FormLabel>
@@ -174,7 +177,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
 
         <FormField
           control={form.control}
-          name="description"
+          name="descricao"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Descrição</FormLabel>

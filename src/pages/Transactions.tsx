@@ -26,8 +26,8 @@ const Transactions = () => {
   const [open, setOpen] = useState(false);
   const { transactions, isLoading } = useTransactions();
 
-  const getTypeColor = (type: string) => {
-    return type === "income" ? "bg-success" : "bg-destructive";
+  const getTypeColor = (tipo: string) => {
+    return tipo === "Receita" ? "bg-success" : "bg-destructive";
   };
 
   return (
@@ -88,19 +88,19 @@ const Transactions = () => {
                       {new Date(transaction.date).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      <Badge className={getTypeColor(transaction.type)}>
-                        {transaction.type === "income" ? "Receita" : "Despesa"}
+                      <Badge className={getTypeColor(transaction.tipo)}>
+                        {transaction.tipo}
                       </Badge>
                     </TableCell>
-                    <TableCell>{transaction.description}</TableCell>
+                    <TableCell>{transaction.descricao}</TableCell>
                     <TableCell>
-                      {transaction.category?.name}
-                      {transaction.subcategory?.name && 
-                        ` / ${transaction.subcategory.name}`}
+                      {transaction.categoria?.name}
+                      {transaction.subcategoria?.nome && 
+                        ` / ${transaction.subcategoria.nome}`}
                     </TableCell>
                     <TableCell>{transaction.account?.name}</TableCell>
                     <TableCell className="text-right font-medium">
-                      {formatCurrency(transaction.amount)}
+                      {formatCurrency(transaction.valor)}
                     </TableCell>
                   </TableRow>
                 ))

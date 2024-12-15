@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
   BarChart,
@@ -29,6 +30,25 @@ const mockPieData = [
 const COLORS = ["#ef4444", "#f59e0b", "#22c55e"];
 
 const Dashboard = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Adjust chart height based on window width
+  const getChartHeight = () => {
+    if (windowWidth < 768) {
+      return 200; // Smaller height for mobile
+    }
+    return 250; // Default height for desktop
+  };
+
   return (
     <div className="container max-w-7xl mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-6">
@@ -95,7 +115,7 @@ const Dashboard = () => {
         {/* Distribuição por Status */}
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Distribuição por Status</h2>
-          <div className="h-64">
+          <div style={{ height: getChartHeight() }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={mockBarData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -112,15 +132,15 @@ const Dashboard = () => {
         {/* Tickets por Responsável */}
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Tickets por Responsável</h2>
-          <div className="h-64">
+          <div style={{ height: getChartHeight() }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={mockPieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
+                  innerRadius={windowWidth < 768 ? 40 : 60}
+                  outerRadius={windowWidth < 768 ? 60 : 80}
                   fill="#8884d8"
                   paddingAngle={5}
                   dataKey="value"
@@ -138,15 +158,15 @@ const Dashboard = () => {
         {/* Tickets por Prioridade */}
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Tickets por Prioridade</h2>
-          <div className="h-64">
+          <div style={{ height: getChartHeight() }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={mockPieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
+                  innerRadius={windowWidth < 768 ? 40 : 60}
+                  outerRadius={windowWidth < 768 ? 60 : 80}
                   fill="#8884d8"
                   paddingAngle={5}
                   dataKey="value"

@@ -19,6 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useTransactions } from "@/hooks/useTransactions";
+import { useUser } from "@supabase/auth-helpers-react";
 
 const formSchema = z.object({
   type: z.enum(["income", "expense"]),
@@ -34,6 +36,9 @@ interface TransactionFormProps {
 }
 
 const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
+  const { createTransaction } = useTransactions();
+  const user = useUser();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,8 +51,19 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!user) return;
+
+    await createTransaction.mutateAsync({
+      user_id: user.id,
+      type: values.type,
+      amount: parseFloat(values.amount),
+      description: values.description,
+      category_id: values.category,
+      account_id: values.account,
+      date: values.date,
+    });
+
     onSuccess();
   };
 

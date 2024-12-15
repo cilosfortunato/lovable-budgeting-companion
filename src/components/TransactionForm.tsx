@@ -62,6 +62,8 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       category_id: values.category,
       account_id: values.account,
       date: values.date,
+      subcategory_id: null,
+      attachment_url: null,
     });
 
     onSuccess();

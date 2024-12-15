@@ -7,6 +7,9 @@ import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Planning from "./pages/Planning";
+import Login from "./pages/Login";
+import { AuthProvider } from "./components/auth/AuthProvider";
+import { RequireAuth } from "./components/auth/RequireAuth";
 
 const queryClient = new QueryClient();
 
@@ -16,13 +19,41 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Layout>
+        <AuthProvider>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/transactions" element={<Transactions />} />
-            <Route path="/planning" element={<Planning />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/transactions"
+              element={
+                <RequireAuth>
+                  <Layout>
+                    <Transactions />
+                  </Layout>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/planning"
+              element={
+                <RequireAuth>
+                  <Layout>
+                    <Planning />
+                  </Layout>
+                </RequireAuth>
+              }
+            />
           </Routes>
-        </Layout>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

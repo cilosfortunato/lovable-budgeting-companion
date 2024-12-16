@@ -38,6 +38,7 @@ const formSchema = z.object({
   observacoes: z.string().optional(),
   categoria_id: z.string().min(1, "Categoria é obrigatória"),
   subcategoria_id: z.string().min(1, "Subcategoria é obrigatória"),
+  account_id: z.string().min(1, "Conta é obrigatória"),
 });
 
 interface TransactionFormFieldsProps {
@@ -55,6 +56,7 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
       date: new Date().toISOString().split("T")[0],
       parcelado: false,
       regularidade: "Único",
+      account_id: "",
     },
   });
 
@@ -87,6 +89,17 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
         .from("subcategorias")
         .select("id, nome")
         .order("nome");
+      return data || [];
+    },
+  });
+
+  const { data: accounts = [] } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("accounts")
+        .select("id, name")
+        .order("name");
       return data || [];
     },
   });
@@ -242,6 +255,31 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
                     {subcategorias.map((subcategoria) => (
                       <SelectItem key={subcategoria.id} value={subcategoria.id}>
                         {subcategoria.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="account_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Conta</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a conta" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {accounts.map((account) => (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

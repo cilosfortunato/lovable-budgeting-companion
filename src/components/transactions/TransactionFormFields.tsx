@@ -154,19 +154,21 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
 
         <InstallmentFields form={form} />
 
-        <FormField
-          control={form.control}
-          name="observacoes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observações{!isParcelado && " *"}</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Digite as observações" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!isParcelado && (
+          <FormField
+            control={form.control}
+            name="observacoes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Observações</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Digite as observações" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button type="submit" className="w-full">
           Salvar

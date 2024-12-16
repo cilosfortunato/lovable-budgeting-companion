@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { CategoryFields } from "./fields/CategoryFields";
 import { InstallmentFields } from "./fields/InstallmentFields";
+import { AccountField } from "./fields/AccountField";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -24,6 +25,7 @@ const formSchema = z.object({
   observacoes: z.string().optional(),
   categoria_id: z.string().min(1, "Categoria é obrigatória"),
   subcategoria_id: z.string().min(1, "Subcategoria é obrigatória"),
+  account_id: z.string().min(1, "Conta é obrigatória"),
 });
 
 interface TransactionFormFieldsProps {
@@ -41,6 +43,7 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
       regularidade: "Único",
       categoria_id: "automatica",
       subcategoria_id: "automatica",
+      account_id: "",
     },
   });
 
@@ -132,6 +135,7 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
           />
 
           <CategoryFields form={form} />
+          <AccountField form={form} />
         </div>
 
         <FormField

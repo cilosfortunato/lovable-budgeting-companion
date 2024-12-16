@@ -21,6 +21,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       descricao: values.descricao,
       categoria_id: values.categoria_id,
       subcategoria_id: values.subcategoria_id,
+      account_id: values.account_id,
       date: values.date,
       status: values.status,
       parcelas: values.parcelado ? parseInt(values.parcelas) : 0,

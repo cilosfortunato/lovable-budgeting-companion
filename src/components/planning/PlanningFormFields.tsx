@@ -3,12 +3,39 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PlanningFormFieldsProps {
   form: UseFormReturn<any>;
 }
 
 export const PlanningFormFields = ({ form }: PlanningFormFieldsProps) => {
+  const isParcelado = form.watch("parcelado");
+
+  const { data: categorias = [] } = useQuery({
+    queryKey: ["categorias"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("categorias")
+        .select("id, name")
+        .order("name");
+      return [{ id: "automatica", name: "Automática" }, ...(data || [])];
+    },
+  });
+
+  const { data: subcategorias = [] } = useQuery({
+    queryKey: ["subcategorias"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("subcategorias")
+        .select("id, nome")
+        .order("nome");
+      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
+    },
+  });
+
   return (
     <>
       <FormField
@@ -31,18 +58,18 @@ export const PlanningFormFields = ({ form }: PlanningFormFieldsProps) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Categoria</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} defaultValue="automatica">
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a categoria" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="electronics">Eletrônicos</SelectItem>
-                <SelectItem value="furniture">Móveis</SelectItem>
-                <SelectItem value="travel">Viagem</SelectItem>
-                <SelectItem value="vehicle">Veículo</SelectItem>
-                <SelectItem value="other">Outros</SelectItem>
+                {categorias.map((categoria) => (
+                  <SelectItem key={categoria.id} value={categoria.id}>
+                    {categoria.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <FormMessage />
@@ -52,13 +79,24 @@ export const PlanningFormFields = ({ form }: PlanningFormFieldsProps) => {
 
       <FormField
         control={form.control}
-        name="description"
+        name="subcategory"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Descrição</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Digite uma descrição" {...field} />
-            </FormControl>
+            <FormLabel>Subcategoria</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue="automatica">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a subcategoria" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {subcategorias.map((subcategoria) => (
+                  <SelectItem key={subcategoria.id} value={subcategoria.id}>
+                    {subcategoria.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -115,6 +153,87 @@ export const PlanningFormFields = ({ form }: PlanningFormFieldsProps) => {
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="parcelado"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormControl>
+            <div className="space-y-1 leading-none">
+              <FormLabel>Parcelado</FormLabel>
+            </div>
+          </FormItem>
+        )}
+      />
+
+      {isParcelado && (
+        <>
+          <FormField
+            control={form.control}
+            name="parcelas"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantas parcelas?</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="60"
+                    placeholder="Número de parcelas"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="regularidade"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Regularidade das Parcelas</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a regularidade" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Único">Único</SelectItem>
+                    <SelectItem value="Semanal">Semanal</SelectItem>
+                    <SelectItem value="Trimestral">Trimestral</SelectItem>
+                    <SelectItem value="Mensal">Mensal</SelectItem>
+                    <SelectItem value="Anual">Anual</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="observacoes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Observações</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Digite as observações" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </>
+      )}
 
       <FormField
         control={form.control}

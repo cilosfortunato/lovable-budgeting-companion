@@ -10,12 +10,17 @@ import { useUser } from "@supabase/auth-helpers-react";
 const formSchema = z.object({
   item: z.string().min(3, "Nome do item deve ter pelo menos 3 caracteres"),
   category: z.string().min(1, "Categoria é obrigatória"),
+  subcategory: z.string().min(1, "Subcategoria é obrigatória"),
   description: z.string().optional(),
   estimatedValue: z.string().min(1, "Valor estimado é obrigatório"),
   priority: z.string().min(1, "Prioridade é obrigatória"),
   expectedDate: z.string().min(1, "Data prevista é obrigatória"),
   status: z.string().min(1, "Status é obrigatório"),
   savedAmount: z.string().min(1, "Valor economizado é obrigatório"),
+  parcelado: z.boolean().default(false),
+  parcelas: z.string().optional(),
+  regularidade: z.string().optional(),
+  observacoes: z.string().optional(),
 });
 
 interface PlanningFormProps {
@@ -30,13 +35,18 @@ const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       item: "",
-      category: "",
+      category: "automatica",
+      subcategory: "automatica",
       description: "",
       estimatedValue: "",
       priority: "",
       expectedDate: new Date().toISOString().split("T")[0],
       status: "planned",
       savedAmount: "0",
+      parcelado: false,
+      parcelas: "",
+      regularidade: "Único",
+      observacoes: "",
     },
   });
 
@@ -47,13 +57,16 @@ const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
       user_id: user.id,
       item: values.item,
       category_id: values.category,
+      subcategory_id: values.subcategory,
       description: values.description || null,
       estimated_value: parseFloat(values.estimatedValue),
       priority: values.priority,
       expected_date: values.expectedDate,
       status: values.status,
       saved_amount: parseFloat(values.savedAmount),
-      subcategory_id: null,
+      parcelas: values.parcelado ? parseInt(values.parcelas || "0") : 0,
+      regularidade: values.parcelado ? values.regularidade : null,
+      observacoes: values.parcelado ? values.observacoes : null,
     });
 
     onSuccess();

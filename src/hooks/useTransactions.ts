@@ -21,7 +21,6 @@ export const useTransactions = () => {
         .from("transacoes")
         .select(`
           *,
-          account:accounts(name),
           categoria:categorias(name),
           subcategoria:subcategorias(nome)
         `)
@@ -33,11 +32,7 @@ export const useTransactions = () => {
         throw error;
       }
 
-      if (!data) {
-        return [];
-      }
-
-      return data;
+      return data || [];
     },
     enabled: !!user,
   });
@@ -71,70 +66,10 @@ export const useTransactions = () => {
     },
   });
 
-  const updateTransaction = useMutation({
-    mutationFn: async (transaction: Partial<Transaction> & { id: string }) => {
-      if (!user) {
-        throw new Error("User not authenticated");
-      }
-
-      const { data, error } = await supabase
-        .from("transacoes")
-        .update(transaction)
-        .eq("id", transaction.id)
-        .eq("user_id", user.id)
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error updating transaction:", error);
-        throw error;
-      }
-
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transacoes"] });
-      toast.success("Transação atualizada com sucesso!");
-    },
-    onError: (error) => {
-      console.error("Erro ao atualizar transação:", error);
-      toast.error("Erro ao atualizar transação. Por favor, tente novamente.");
-    },
-  });
-
-  const deleteTransaction = useMutation({
-    mutationFn: async (id: string) => {
-      if (!user) {
-        throw new Error("User not authenticated");
-      }
-
-      const { error } = await supabase
-        .from("transacoes")
-        .delete()
-        .eq("id", id)
-        .eq("user_id", user.id);
-
-      if (error) {
-        console.error("Error deleting transaction:", error);
-        throw error;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transacoes"] });
-      toast.success("Transação excluída com sucesso!");
-    },
-    onError: (error) => {
-      console.error("Erro ao excluir transação:", error);
-      toast.error("Erro ao excluir transação. Por favor, tente novamente.");
-    },
-  });
-
   return {
     transactions,
     isLoading,
     error,
     createTransaction,
-    updateTransaction,
-    deleteTransaction,
   };
 };

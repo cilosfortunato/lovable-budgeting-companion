@@ -230,6 +230,7 @@ export type Database = {
           regularidade:
             | Database["public"]["Enums"]["regularidade_parcelas"]
             | null
+          responsavel: string | null
           status: Database["public"]["Enums"]["status_transacoes"]
           subcategoria_id: string | null
           tipo: Database["public"]["Enums"]["tipo_despesa"]
@@ -249,6 +250,7 @@ export type Database = {
           regularidade?:
             | Database["public"]["Enums"]["regularidade_parcelas"]
             | null
+          responsavel?: string | null
           status?: Database["public"]["Enums"]["status_transacoes"]
           subcategoria_id?: string | null
           tipo?: Database["public"]["Enums"]["tipo_despesa"]
@@ -268,6 +270,7 @@ export type Database = {
           regularidade?:
             | Database["public"]["Enums"]["regularidade_parcelas"]
             | null
+          responsavel?: string | null
           status?: Database["public"]["Enums"]["status_transacoes"]
           subcategoria_id?: string | null
           tipo?: Database["public"]["Enums"]["tipo_despesa"]
@@ -282,6 +285,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "categorias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transacoes_responsavel_fkey"
+            columns: ["responsavel"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["full_name"]
           },
           {
             foreignKeyName: "transacoes_subcategoria_id_fkey"

@@ -96,56 +96,56 @@ export type Database = {
       }
       planejamento: {
         Row: {
-          id: string;
-          user_id: string | null;
-          item: string;
-          category_id: string | null;
-          subcategory_id: string | null;
-          description: string | null;
-          estimated_value: number;
-          priority: string;
-          expected_date: string;
-          status: string;
-          saved_amount: number | null;
-          created_at: string;
-          parcelas: number | null;
-          regularidade: string | null;
-          observacoes: string | null;
-        };
+          category_id: string | null
+          created_at: string
+          description: string | null
+          estimated_value: number
+          expected_date: string
+          id: string
+          item: string
+          observacoes: string | null
+          parcelas: number | null
+          priority: string
+          regularidade: string | null
+          saved_amount: number | null
+          status: string
+          subcategory_id: string | null
+          user_id: string | null
+        }
         Insert: {
-          id?: string;
-          user_id?: string | null;
-          item: string;
-          category_id?: string | null;
-          subcategory_id?: string | null;
-          description?: string | null;
-          estimated_value: number;
-          priority: string;
-          expected_date: string;
-          status: string;
-          saved_amount?: number | null;
-          created_at?: string;
-          parcelas?: number | null;
-          regularidade?: string | null;
-          observacoes?: string | null;
-        };
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_value: number
+          expected_date: string
+          id?: string
+          item: string
+          observacoes?: string | null
+          parcelas?: number | null
+          priority: string
+          regularidade?: string | null
+          saved_amount?: number | null
+          status: string
+          subcategory_id?: string | null
+          user_id?: string | null
+        }
         Update: {
-          id?: string;
-          user_id?: string | null;
-          item?: string;
-          category_id?: string | null;
-          subcategory_id?: string | null;
-          description?: string | null;
-          estimated_value?: number;
-          priority?: string;
-          expected_date?: string;
-          status?: string;
-          saved_amount?: number | null;
-          created_at?: string;
-          parcelas?: number | null;
-          regularidade?: string | null;
-          observacoes?: string | null;
-        };
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_value?: number
+          expected_date?: string
+          id?: string
+          item?: string
+          observacoes?: string | null
+          parcelas?: number | null
+          priority?: string
+          regularidade?: string | null
+          saved_amount?: number | null
+          status?: string
+          subcategory_id?: string | null
+          user_id?: string | null
+        }
         Relationships: [
           {
             foreignKeyName: "shopping_plans_category_id_fkey"
@@ -191,7 +191,7 @@ export type Database = {
           created_at?: string
           familia?: string | null
           full_name?: string | null
-          id: string
+          id?: string
           senha?: string | null
           telefone?: number | null
         }
@@ -214,7 +214,7 @@ export type Database = {
           categoria_id?: string | null
           criado?: string
           id?: string
-          nome: string
+          nome?: string
         }
         Relationships: [
           {
@@ -455,7 +455,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never,
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -467,10 +467,10 @@ export type Tables<
         PublicSchema["Views"])
     ? (PublicSchema["Tables"] &
         PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-      Row: infer R
-    }
-    ? R
-    : never
+        Row: infer R
+      }
+      ? R
+      : never
     : never
 
 export type TablesInsert<

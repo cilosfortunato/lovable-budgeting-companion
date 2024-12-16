@@ -21,6 +21,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useUser } from "@supabase/auth-helpers-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   tipo: z.enum(["Receita", "Despesa"]),
@@ -30,6 +32,7 @@ const formSchema = z.object({
   account_id: z.string().min(1, "Conta é obrigatória"),
   date: z.string().min(1, "Data é obrigatória"),
   observacoes: z.string().optional(),
+  responsavel: z.string().min(1, "Responsável é obrigatório"),
 });
 
 interface TransactionFormProps {
@@ -39,6 +42,17 @@ interface TransactionFormProps {
 const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
   const { createTransaction } = useTransactions();
   const user = useUser();
+
+  const { data: profiles = [] } = useQuery({
+    queryKey: ["profiles"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .order("full_name");
+      return data || [];
+    },
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +64,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       account_id: "",
       date: new Date().toISOString().split("T")[0],
       observacoes: "",
+      responsavel: "",
     },
   });
 
@@ -70,6 +85,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       regularidade: "Único",
       status: "Programado",
       observacoes: values.observacoes || null,
+      responsavel: values.responsavel,
     });
 
     onSuccess();
@@ -79,6 +95,31 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-h-[70vh] overflow-y-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="responsavel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Responsável</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o responsável" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {profiles.map((profile) => (
+                      <SelectItem key={profile.full_name} value={profile.full_name}>
+                        {profile.full_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="tipo"

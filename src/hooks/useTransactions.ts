@@ -22,7 +22,8 @@ export const useTransactions = () => {
         .select(`
           *,
           categoria:categorias(name),
-          subcategoria:subcategorias(nome)
+          subcategoria:subcategorias(nome),
+          account:accounts(name)
         `)
         .eq('user_id', user.id)
         .order("date", { ascending: false });

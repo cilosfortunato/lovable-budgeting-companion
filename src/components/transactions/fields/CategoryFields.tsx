@@ -2,6 +2,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Tag } from "lucide-react";
 
 export const CategoryFields = ({ form }: { form: any }) => {
   const { data: categorias = [] } = useQuery({
@@ -11,7 +12,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         .from("categorias")
         .select("id, nome")
         .order("nome");
-      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
+      return data || [];
     },
   });
 
@@ -22,7 +23,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         .from("subcategorias")
         .select("id, nome")
         .order("nome");
-      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
+      return data || [];
     },
   });
 
@@ -33,7 +34,10 @@ export const CategoryFields = ({ form }: { form: any }) => {
         name="categoria_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Categoria</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <Tag className="h-4 w-4" />
+              Categoria
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -58,7 +62,10 @@ export const CategoryFields = ({ form }: { form: any }) => {
         name="subcategoria_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Subcategoria</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <Tag className="h-4 w-4" />
+              Subcategoria
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>

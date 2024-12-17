@@ -1,6 +1,7 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { DollarSign, ListFilter, Tag, Calendar } from "lucide-react";
 
 export const BasicFields = ({ form }: { form: any }) => {
   return (
@@ -10,7 +11,10 @@ export const BasicFields = ({ form }: { form: any }) => {
         name="tipo"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Operação</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <ListFilter className="h-4 w-4" />
+              Operação
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -32,7 +36,10 @@ export const BasicFields = ({ form }: { form: any }) => {
         name="valor"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Valor</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4" />
+              Valor
+            </FormLabel>
             <FormControl>
               <Input type="number" step="0.01" placeholder="0,00" {...field} />
             </FormControl>
@@ -46,7 +53,10 @@ export const BasicFields = ({ form }: { form: any }) => {
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Status</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <Tag className="h-4 w-4" />
+              Status
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -68,23 +78,12 @@ export const BasicFields = ({ form }: { form: any }) => {
         name="date"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Data</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Data
+            </FormLabel>
             <FormControl>
               <Input type="date" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="descricao"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Descrição</FormLabel>
-            <FormControl>
-              <Input placeholder="Digite uma descrição" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

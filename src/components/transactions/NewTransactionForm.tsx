@@ -9,8 +9,8 @@ import { toast } from "sonner";
 import { BasicFields } from "./fields/BasicFields";
 import { CategoryFields } from "./fields/CategoryFields";
 import { InstallmentFields } from "./fields/InstallmentFields";
-import { AccountField } from "./fields/AccountField";
 import { ResponsibleField } from "./fields/ResponsibleField";
+import { DescriptionField } from "./fields/DescriptionField";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -25,7 +25,6 @@ const formSchema = z.object({
   observacoes: z.string().optional(),
   categoria_id: z.string().min(1, "Categoria é obrigatória"),
   subcategoria_id: z.string().min(1, "Subcategoria é obrigatória"),
-  account_id: z.string().min(1, "Conta é obrigatória"),
 });
 
 interface NewTransactionFormProps {
@@ -44,9 +43,8 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
       date: new Date().toISOString().split("T")[0],
       parcelado: false,
       regularidade: "Único",
-      categoria_id: "automatica",
-      subcategoria_id: "automatica",
-      account_id: "",
+      categoria_id: "",
+      subcategoria_id: "",
     },
   });
 
@@ -70,7 +68,6 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         responsavel: values.responsavel,
         categoria_id: values.categoria_id,
         subcategoria_id: values.subcategoria_id,
-        account_id: values.account_id,
         url_anexos: null,
       });
 
@@ -85,11 +82,13 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ResponsibleField form={form} />
+        <DescriptionField form={form} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <BasicFields form={form} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <ResponsibleField form={form} />
           <CategoryFields form={form} />
-          <AccountField form={form} />
         </div>
         <InstallmentFields form={form} />
         <Button type="submit" className="w-full">

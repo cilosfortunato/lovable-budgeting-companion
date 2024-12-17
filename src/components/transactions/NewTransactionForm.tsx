@@ -37,6 +37,9 @@ const formSchema = z.object({
   parcelas: z.string().optional(),
   regularidade: z.enum(["Único", "Semanal", "Trimestral", "Mensal", "Anual"]).optional(),
   observacoes: z.string().optional(),
+  categoria_id: z.string().min(1, "Categoria é obrigatória"),
+  subcategoria_id: z.string().min(1, "Subcategoria é obrigatória"),
+  account_id: z.string().min(1, "Conta é obrigatória"),
 });
 
 interface NewTransactionFormProps {
@@ -58,6 +61,39 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
     },
   });
 
+  const { data: categorias = [] } = useQuery({
+    queryKey: ["categorias"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("categorias")
+        .select("id, name")
+        .order("name");
+      return [{ id: "automatica", name: "Automática" }, ...(data || [])];
+    },
+  });
+
+  const { data: subcategorias = [] } = useQuery({
+    queryKey: ["subcategorias"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("subcategorias")
+        .select("id, nome")
+        .order("nome");
+      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
+    },
+  });
+
+  const { data: accounts = [] } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("accounts")
+        .select("id, name")
+        .order("name");
+      return data || [];
+    },
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,6 +102,9 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
       date: new Date().toISOString().split("T")[0],
       parcelado: false,
       regularidade: "Único",
+      categoria_id: "automatica",
+      subcategoria_id: "automatica",
+      account_id: "",
     },
   });
 
@@ -89,6 +128,10 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         regularidade: values.regularidade || "Único",
         observacoes: values.observacoes,
         responsavel: values.responsavel,
+        categoria_id: values.categoria_id,
+        subcategoria_id: values.subcategoria_id,
+        account_id: values.account_id,
+        url_anexos: null,
       });
 
       toast.success("Transação criada com sucesso!");
@@ -195,6 +238,81 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="categoria_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categoria</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a categoria" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categorias.map((categoria) => (
+                      <SelectItem key={categoria.id} value={categoria.id}>
+                        {categoria.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="subcategoria_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Subcategoria</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a subcategoria" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {subcategorias.map((subcategoria) => (
+                      <SelectItem key={subcategoria.id} value={subcategoria.id}>
+                        {subcategoria.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="account_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Conta</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a conta" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {accounts.map((account) => (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

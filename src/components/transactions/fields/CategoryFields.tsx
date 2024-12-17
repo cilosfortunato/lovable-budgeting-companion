@@ -9,8 +9,8 @@ export const CategoryFields = ({ form }: { form: any }) => {
     queryFn: async () => {
       const { data } = await supabase
         .from("categorias")
-        .select("id, nome")  // Changed from 'name' to 'nome'
-        .order("nome");      // Changed from 'name' to 'nome'
+        .select("id, nome")
+        .order("nome");
       return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
     },
   });
@@ -34,7 +34,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Categoria</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue="automatica">
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a categoria" />
@@ -43,7 +43,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
               <SelectContent>
                 {categorias.map((categoria) => (
                   <SelectItem key={categoria.id} value={categoria.id}>
-                    {categoria.nome}  {/* Changed from 'name' to 'nome' */}
+                    {categoria.nome}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -59,7 +59,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Subcategoria</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue="automatica">
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a subcategoria" />

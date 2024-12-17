@@ -19,9 +19,9 @@ export const PlanningFormFields = ({ form }: PlanningFormFieldsProps) => {
     queryFn: async () => {
       const { data } = await supabase
         .from("categorias")
-        .select("id, name")
-        .order("name");
-      return [{ id: "automatica", name: "Automática" }, ...(data || [])];
+        .select("id, nome")
+        .order("nome");
+      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
     },
   });
 
@@ -67,7 +67,7 @@ export const PlanningFormFields = ({ form }: PlanningFormFieldsProps) => {
               <SelectContent>
                 {categorias.map((categoria) => (
                   <SelectItem key={categoria.id} value={categoria.id}>
-                    {categoria.name}
+                    {categoria.nome}
                   </SelectItem>
                 ))}
               </SelectContent>

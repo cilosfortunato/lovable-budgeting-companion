@@ -9,9 +9,9 @@ export const CategoryFields = ({ form }: { form: any }) => {
     queryFn: async () => {
       const { data } = await supabase
         .from("categorias")
-        .select("id, name")
-        .order("name");
-      return [{ id: "automatica", name: "Automática" }, ...(data || [])];
+        .select("id, nome")  // Changed from 'name' to 'nome'
+        .order("nome");      // Changed from 'name' to 'nome'
+      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
     },
   });
 
@@ -43,7 +43,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
               <SelectContent>
                 {categorias.map((categoria) => (
                   <SelectItem key={categoria.id} value={categoria.id}>
-                    {categoria.name}
+                    {categoria.nome}  {/* Changed from 'name' to 'nome' */}
                   </SelectItem>
                 ))}
               </SelectContent>

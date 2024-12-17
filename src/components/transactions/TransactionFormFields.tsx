@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { CategoryFields } from "./fields/CategoryFields";
 import { InstallmentFields } from "./fields/InstallmentFields";
+import { AlignLeft, DollarSign, Calendar, ListFilter, Tag, FileText, User } from "lucide-react";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -60,7 +61,10 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
           name="descricao"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <AlignLeft className="h-4 w-4" />
+                Descrição
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Digite uma descrição" {...field} />
               </FormControl>
@@ -69,15 +73,16 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
           )}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ResponsibleField form={form} />
-
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name="tipo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Operação</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <ListFilter className="h-4 w-4" />
+                  Operação
+                </FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -99,7 +104,10 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
             name="valor"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Valor</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Valor
+                </FormLabel>
                 <FormControl>
                   <Input type="number" step="0.01" placeholder="0,00" {...field} />
                 </FormControl>
@@ -113,7 +121,10 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <Tag className="h-4 w-4" />
+                  Status
+                </FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -129,13 +140,18 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
               </FormItem>
             )}
           />
+        </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name="date"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Data</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Data
+                </FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>

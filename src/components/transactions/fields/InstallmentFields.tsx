@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { FileText, Calendar } from "lucide-react";
 
 export const InstallmentFields = ({ form }: { form: any }) => {
   const isParcelado = form.watch("parcelado");
@@ -13,16 +14,16 @@ export const InstallmentFields = ({ form }: { form: any }) => {
         control={form.control}
         name="parcelado"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-            <div className="space-y-0.5">
-              <FormLabel className="text-base">Parcelado</FormLabel>
-            </div>
+          <FormItem className="flex flex-row items-center space-x-4 rounded-lg border p-4">
             <FormControl>
               <Switch
                 checked={field.value}
                 onCheckedChange={field.onChange}
               />
             </FormControl>
+            <div className="space-y-0.5">
+              <FormLabel className="text-base">Parcelado</FormLabel>
+            </div>
           </FormItem>
         )}
       />
@@ -35,7 +36,10 @@ export const InstallmentFields = ({ form }: { form: any }) => {
               name="parcelas"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Quantas parcelas?</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Quantas parcelas?
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -55,7 +59,10 @@ export const InstallmentFields = ({ form }: { form: any }) => {
               name="regularidade"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Regularidade das Parcelas</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Regularidade das Parcelas
+                  </FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -81,7 +88,10 @@ export const InstallmentFields = ({ form }: { form: any }) => {
             name="observacoes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Observações</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Observações
+                </FormLabel>
                 <FormControl>
                   <Textarea placeholder="Digite as observações" {...field} />
                 </FormControl>

@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { CategoryFields } from "./fields/CategoryFields";
 import { InstallmentFields } from "./fields/InstallmentFields";
-import { AccountField } from "./fields/AccountField";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -24,7 +23,6 @@ const formSchema = z.object({
   observacoes: z.string().optional(),
   categoria_id: z.string().min(1, "Categoria é obrigatória"),
   subcategoria_id: z.string().min(1, "Subcategoria é obrigatória"),
-  account_id: z.string().min(1, "Conta é obrigatória"),
 });
 
 interface TransactionFormFieldsProps {
@@ -42,7 +40,6 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
       regularidade: "Único",
       categoria_id: "automatica",
       subcategoria_id: "automatica",
-      account_id: "",
     },
   });
 
@@ -58,6 +55,20 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="descricao"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descrição</FormLabel>
+              <FormControl>
+                <Input placeholder="Digite uma descrição" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ResponsibleField form={form} />
 
@@ -134,22 +145,7 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
           />
 
           <CategoryFields form={form} />
-          <AccountField form={form} />
         </div>
-
-        <FormField
-          control={form.control}
-          name="descricao"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descrição</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite uma descrição" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <InstallmentFields form={form} />
 

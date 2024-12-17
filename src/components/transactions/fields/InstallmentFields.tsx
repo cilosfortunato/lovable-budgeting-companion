@@ -1,7 +1,7 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 export const InstallmentFields = ({ form }: { form: any }) => {
@@ -13,16 +13,16 @@ export const InstallmentFields = ({ form }: { form: any }) => {
         control={form.control}
         name="parcelado"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <FormLabel className="text-base">Parcelado</FormLabel>
+            </div>
             <FormControl>
-              <Checkbox
+              <Switch
                 checked={field.value}
                 onCheckedChange={field.onChange}
               />
             </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel>Parcelado</FormLabel>
-            </div>
           </FormItem>
         )}
       />

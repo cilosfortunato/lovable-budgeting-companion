@@ -11,7 +11,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         .from("categorias")
         .select("id, name")
         .order("name");
-      return [{ id: "automatica", name: "Automática" }, ...(data || [])];
+      return data || [];
     },
   });
 
@@ -22,7 +22,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         .from("subcategorias")
         .select("id, nome")
         .order("nome");
-      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
+      return data || [];
     },
   });
 
@@ -34,7 +34,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Categoria</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue="automatica">
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a categoria" />
@@ -59,7 +59,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Subcategoria</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue="automatica">
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a subcategoria" />

@@ -48,21 +48,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          nome: string
+          name: string
           type: string
           user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
-          nome: string
+          name: string
           type: string
           user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
-          nome?: string
+          name?: string
           type?: string
           user_id?: string | null
         }
@@ -200,19 +200,19 @@ export type Database = {
       subcategorias: {
         Row: {
           categoria_id: string | null
-          criado: string
+          criado: string | null
           id: string
           nome: string
         }
         Insert: {
           categoria_id?: string | null
-          criado: string
+          criado?: string | null
           id?: string
           nome: string
         }
         Update: {
           categoria_id?: string | null
-          criado?: string
+          criado?: string | null
           id?: string
           nome?: string
         }

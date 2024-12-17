@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import TransactionForm from "@/components/TransactionForm";
+import NewTransactionForm from "@/components/transactions/NewTransactionForm";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +24,8 @@ import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 const Transactions = () => {
-  const [open, setOpen] = useState(false);
+  const [openOld, setOpenOld] = useState(false);
+  const [openNew, setOpenNew] = useState(false);
   const { transactions, isLoading } = useTransactions();
 
   const getTypeColor = (tipo: string) => {
@@ -39,20 +41,37 @@ const Transactions = () => {
             Gerencie suas receitas e despesas de forma organizada.
           </p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nova Transação
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>Nova Transação</DialogTitle>
-            </DialogHeader>
-            <TransactionForm onSuccess={() => setOpen(false)} />
-          </DialogContent>
-        </Dialog>
+        <div className="space-x-2">
+          <Dialog open={openNew} onOpenChange={setOpenNew}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Plus className="w-4 h-4 mr-2" />
+                Inserir transação
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Inserir Transação</DialogTitle>
+              </DialogHeader>
+              <NewTransactionForm onSuccess={() => setOpenNew(false)} />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={openOld} onOpenChange={setOpenOld}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Nova Transação
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Nova Transação</DialogTitle>
+              </DialogHeader>
+              <TransactionForm onSuccess={() => setOpenOld(false)} />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
       
       <Card className="overflow-hidden">
@@ -62,22 +81,25 @@ const Transactions = () => {
               <TableRow>
                 <TableHead>Data</TableHead>
                 <TableHead>Tipo</TableHead>
+                <TableHead>Responsável</TableHead>
                 <TableHead>Descrição</TableHead>
-                <TableHead>Categoria</TableHead>
-                <TableHead>Conta</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Parcelas</TableHead>
+                <TableHead>Regularidade</TableHead>
+                <TableHead>Observações</TableHead>
                 <TableHead className="text-right">Valor</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">
+                  <TableCell colSpan={9} className="text-center">
                     Carregando...
                   </TableCell>
                 </TableRow>
               ) : transactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">
+                  <TableCell colSpan={9} className="text-center">
                     Nenhuma transação registrada
                   </TableCell>
                 </TableRow>
@@ -92,13 +114,12 @@ const Transactions = () => {
                         {transaction.tipo}
                       </Badge>
                     </TableCell>
+                    <TableCell>{transaction.responsavel}</TableCell>
                     <TableCell>{transaction.descricao}</TableCell>
-                    <TableCell>
-                      {transaction.categoria?.name}
-                      {transaction.subcategoria?.nome && 
-                        ` / ${transaction.subcategoria.nome}`}
-                    </TableCell>
-                    <TableCell>{transaction.account?.name}</TableCell>
+                    <TableCell>{transaction.status}</TableCell>
+                    <TableCell>{transaction.parcelas || '-'}</TableCell>
+                    <TableCell>{transaction.regularidade || '-'}</TableCell>
+                    <TableCell>{transaction.observacoes || '-'}</TableCell>
                     <TableCell className="text-right font-medium">
                       {formatCurrency(transaction.valor)}
                     </TableCell>

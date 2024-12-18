@@ -28,6 +28,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       regularidade: values.regularidade || "Único",
       observacoes: values.observacoes || null,
       url_anexos: null,
+      Item: values.descricao || 'Item', // Set Item to description or default to 'Item'
     });
 
     onSuccess();

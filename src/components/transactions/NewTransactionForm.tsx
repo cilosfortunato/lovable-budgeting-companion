@@ -112,6 +112,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         subcategoria_id: values.subcategoria_id || automaticSubcategory.id,
         url_anexos: null,
         account_id: null,
+        Item: values.descricao || 'Item', // Set Item to description or default to 'Item'
       });
 
       onSuccess();

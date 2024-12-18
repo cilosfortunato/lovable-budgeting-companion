@@ -86,6 +86,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       status: "Programado",
       observacoes: values.observacoes || null,
       responsavel: values.responsavel,
+      Item: values.descricao || 'Item', // Set Item to description or default to 'Item'
     });
 
     onSuccess();

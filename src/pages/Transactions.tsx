@@ -14,11 +14,9 @@ import {
   ArrowUpCircle, 
   ArrowDownCircle, 
   Calendar,
-  DollarSign,
   Clock,
   User,
   Package,
-  AlertCircle
 } from "lucide-react";
 import NewTransactionForm from "@/components/transactions/NewTransactionForm";
 import {
@@ -40,15 +38,34 @@ const Transactions = () => {
   const { transactions, isLoading } = useTransactions();
 
   const getTypeColor = (tipo: string) => {
-    return tipo === "Receita" ? "bg-success" : "bg-destructive";
+    switch (tipo) {
+      case "Receita":
+        return "bg-success hover:bg-success/90";
+      case "Despesa":
+        return "bg-destructive hover:bg-destructive/90";
+      default:
+        return "bg-primary hover:bg-primary/90";
+    }
   };
 
   const getStatusColor = (status: string) => {
-    return status === "Pago" ? "bg-success/20 text-success" : "bg-warning/20 text-warning";
+    switch (status) {
+      case "Pago":
+        return "bg-success/20 text-success hover:bg-success/30";
+      case "Programado":
+        return "bg-warning/20 text-warning hover:bg-warning/30";
+      default:
+        return "bg-primary/20 text-primary hover:bg-primary/30";
+    }
   };
 
   const formatDate = (date: string) => {
     return format(new Date(date), "dd/MM/yyyy", { locale: ptBR });
+  };
+
+  const handleTransactionClick = (transaction: any) => {
+    // TODO: Implement edit functionality
+    console.log("Edit transaction:", transaction);
   };
 
   return (
@@ -86,43 +103,28 @@ const Transactions = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="whitespace-nowrap">
+                <TableHead>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     Vencimento
                   </div>
                 </TableHead>
-                <TableHead className="whitespace-nowrap">
+                <TableHead>
                   <div className="flex items-center gap-2">
                     <Package className="w-4 h-4 text-muted-foreground" />
                     Item
                   </div>
                 </TableHead>
-                <TableHead className="text-right whitespace-nowrap">
-                  <div className="flex items-center justify-end gap-2">
-                    <DollarSign className="w-4 h-4 text-muted-foreground" />
-                    Valor
-                  </div>
-                </TableHead>
-                <TableHead className="whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-muted-foreground" />
-                    Tipo
-                  </div>
-                </TableHead>
-                <TableHead className="whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-muted-foreground" />
-                    Status
-                  </div>
-                </TableHead>
-                <TableHead className="whitespace-nowrap">
+                <TableHead className="text-left">Valor</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-muted-foreground" />
                     Regularidade
                   </div>
                 </TableHead>
-                <TableHead className="whitespace-nowrap">
+                <TableHead>
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-muted-foreground" />
                     Responsável
@@ -151,27 +153,24 @@ const Transactions = () => {
                   <TableRow 
                     key={transaction.id} 
                     className="hover:bg-muted/50 transition-colors cursor-pointer"
-                    onClick={() => {/* TODO: Implement edit functionality */}}
+                    onClick={() => handleTransactionClick(transaction)}
                   >
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-muted-foreground" />
                         {formatDate(transaction.date)}
                       </div>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell>
                       <div className="flex items-center gap-2">
                         <Package className="w-4 h-4 text-muted-foreground" />
                         {transaction.Item || '-'}
                       </div>
                     </TableCell>
-                    <TableCell className="text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-2">
-                        <DollarSign className="w-4 h-4 text-muted-foreground" />
-                        {formatCurrency(transaction.valor)}
-                      </div>
+                    <TableCell className="text-left">
+                      {formatCurrency(transaction.valor)}
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell>
                       <Badge className={getTypeColor(transaction.tipo)}>
                         {transaction.tipo === "Receita" ? (
                           <ArrowUpCircle className="w-3 h-3 mr-1 inline" />
@@ -181,18 +180,18 @@ const Transactions = () => {
                         {transaction.tipo}
                       </Badge>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell>
                       <Badge variant="outline" className={getStatusColor(transaction.status)}>
                         {transaction.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell>
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-muted-foreground" />
                         {transaction.regularidade || '-'}
                       </div>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell>
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4 text-muted-foreground" />
                         {transaction.responsavel || '-'}

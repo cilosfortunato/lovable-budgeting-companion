@@ -4,7 +4,6 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useTransactions } from "@/hooks/useTransactions";
-import { useUser } from "@supabase/auth-helpers-react";
 import { toast } from "sonner";
 import { BasicFields } from "./fields/BasicFields";
 import { CategoryFields } from "./fields/CategoryFields";
@@ -70,6 +69,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         categoria_id: values.categoria_id,
         subcategoria_id: values.subcategoria_id,
         url_anexos: null,
+        account_id: null, // Set account_id to null since it's not used
       });
 
       toast.success("Transação criada com sucesso!");

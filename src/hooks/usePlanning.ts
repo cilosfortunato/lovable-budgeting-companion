@@ -15,7 +15,7 @@ export const usePlanning = () => {
         .from("planejamento")
         .select(`
           *,
-          categoria:categorias(name),
+          categoria:categorias(nome),
           subcategoria:subcategorias(nome)
         `)
         .order("expected_date", { ascending: true });

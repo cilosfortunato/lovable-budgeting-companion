@@ -9,7 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign } from "lucide-react";
+import { 
+  Plus, 
+  ArrowUpCircle, 
+  ArrowDownCircle, 
+  Calendar,
+  DollarSign,
+  Clock,
+  User,
+  Package,
+  AlertCircle
+} from "lucide-react";
 import NewTransactionForm from "@/components/transactions/NewTransactionForm";
 import {
   Dialog,
@@ -22,6 +32,8 @@ import {
 import { useTransactions } from "@/hooks/useTransactions";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const Transactions = () => {
   const [open, setOpen] = useState(false);
@@ -35,12 +47,16 @@ const Transactions = () => {
     return status === "Pago" ? "bg-success/20 text-success" : "bg-warning/20 text-warning";
   };
 
+  const formatDate = (date: string) => {
+    return format(new Date(date), "dd/MM/yyyy", { locale: ptBR });
+  };
+
   return (
     <div className="container max-w-7xl mx-auto px-4 py-12">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Transações
+            Renda Familiar
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Gerencie suas receitas e despesas de forma organizada.
@@ -48,7 +64,7 @@ const Transactions = () => {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="shadow-sm">
+            <Button className="shadow-sm bg-primary hover:bg-primary/90">
               <Plus className="w-4 h-4 mr-2" />
               Nova Transação
             </Button>
@@ -70,13 +86,48 @@ const Transactions = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead>Data</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Responsável</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Parcelas</TableHead>
-                <TableHead>Regularidade</TableHead>
-                <TableHead className="text-right">Valor</TableHead>
+                <TableHead className="whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    Vencimento
+                  </div>
+                </TableHead>
+                <TableHead className="whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <Package className="w-4 h-4 text-muted-foreground" />
+                    Item
+                  </div>
+                </TableHead>
+                <TableHead className="text-right whitespace-nowrap">
+                  <div className="flex items-center justify-end gap-2">
+                    <DollarSign className="w-4 h-4 text-muted-foreground" />
+                    Valor
+                  </div>
+                </TableHead>
+                <TableHead className="whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-muted-foreground" />
+                    Tipo
+                  </div>
+                </TableHead>
+                <TableHead className="whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-muted-foreground" />
+                    Status
+                  </div>
+                </TableHead>
+                <TableHead className="whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    Regularidade
+                  </div>
+                </TableHead>
+                <TableHead className="whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    Responsável
+                  </div>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -102,11 +153,25 @@ const Transactions = () => {
                     className="hover:bg-muted/50 transition-colors cursor-pointer"
                     onClick={() => {/* TODO: Implement edit functionality */}}
                   >
-                    <TableCell className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      {new Date(transaction.date).toLocaleDateString()}
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        {formatDate(transaction.date)}
+                      </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Package className="w-4 h-4 text-muted-foreground" />
+                        {transaction.Item || '-'}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-2">
+                        <DollarSign className="w-4 h-4 text-muted-foreground" />
+                        {formatCurrency(transaction.valor)}
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
                       <Badge className={getTypeColor(transaction.tipo)}>
                         {transaction.tipo === "Receita" ? (
                           <ArrowUpCircle className="w-3 h-3 mr-1 inline" />
@@ -116,18 +181,21 @@ const Transactions = () => {
                         {transaction.tipo}
                       </Badge>
                     </TableCell>
-                    <TableCell>{transaction.responsavel}</TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap">
                       <Badge variant="outline" className={getStatusColor(transaction.status)}>
                         {transaction.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{transaction.parcelas || '-'}</TableCell>
-                    <TableCell>{transaction.regularidade || '-'}</TableCell>
-                    <TableCell className="text-right font-medium">
-                      <div className="flex items-center justify-end gap-2">
-                        <DollarSign className="w-4 h-4 text-muted-foreground" />
-                        {formatCurrency(transaction.valor)}
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-muted-foreground" />
+                        {transaction.regularidade || '-'}
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        {transaction.responsavel || '-'}
                       </div>
                     </TableCell>
                   </TableRow>

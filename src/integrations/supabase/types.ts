@@ -234,6 +234,7 @@ export type Database = {
           date: string
           descricao: string | null
           id: string
+          Item: string | null
           observacoes: string | null
           parcelas: number | null
           regularidade:
@@ -254,6 +255,7 @@ export type Database = {
           date: string
           descricao?: string | null
           id?: string
+          Item?: string | null
           observacoes?: string | null
           parcelas?: number | null
           regularidade?:
@@ -274,6 +276,7 @@ export type Database = {
           date?: string
           descricao?: string | null
           id?: string
+          Item?: string | null
           observacoes?: string | null
           parcelas?: number | null
           regularidade?:

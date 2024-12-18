@@ -12,7 +12,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         .from("categorias")
         .select("id, nome")
         .order("nome");
-      return data || [];
+      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
     },
   });
 
@@ -23,7 +23,7 @@ export const CategoryFields = ({ form }: { form: any }) => {
         .from("subcategorias")
         .select("id, nome")
         .order("nome");
-      return data || [];
+      return [{ id: "automatica", nome: "Automática" }, ...(data || [])];
     },
   });
 

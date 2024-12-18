@@ -11,6 +11,7 @@ import { CategoryFields } from "./fields/CategoryFields";
 import { InstallmentFields } from "./fields/InstallmentFields";
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { DescriptionField } from "./fields/DescriptionField";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -33,7 +34,7 @@ interface NewTransactionFormProps {
 
 const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
   const { createTransaction } = useTransactions();
-  const user = useUser();
+  const { session } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,20 +44,20 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
       date: new Date().toISOString().split("T")[0],
       parcelado: false,
       regularidade: "Único",
-      categoria_id: "",
-      subcategoria_id: "",
+      categoria_id: "automatica",
+      subcategoria_id: "automatica",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!user) {
+    if (!session?.user) {
       toast.error("Usuário não autenticado");
       return;
     }
 
     try {
       await createTransaction.mutateAsync({
-        user_id: user.id,
+        user_id: session.user.id,
         tipo: values.tipo,
         valor: parseFloat(values.valor),
         descricao: values.descricao,
@@ -82,9 +83,13 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <DescriptionField form={form} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <BasicFields form={form} />
+        <div className="grid grid-cols-4 gap-4">
+          <div className="col-span-3">
+            <DescriptionField form={form} />
+          </div>
+          <div className="col-span-1">
+            <BasicFields form={form} />
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <ResponsibleField form={form} />

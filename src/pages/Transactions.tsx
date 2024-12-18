@@ -9,12 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus } from "lucide-react";
+import { Plus, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import TransactionForm from "@/components/TransactionForm";
 import NewTransactionForm from "@/components/transactions/NewTransactionForm";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -32,19 +33,25 @@ const Transactions = () => {
     return tipo === "Receita" ? "bg-success" : "bg-destructive";
   };
 
+  const getStatusColor = (status: string) => {
+    return status === "Pago" ? "bg-success/20 text-success" : "bg-warning/20 text-warning";
+  };
+
   return (
-    <div className="container max-w-7xl mx-auto px-4 pb-20">
-      <div className="flex justify-between items-center mb-6">
+    <div className="container max-w-7xl mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Transações</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Transações
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Gerencie suas receitas e despesas de forma organizada.
           </p>
         </div>
         <div className="space-x-2">
           <Dialog open={openNew} onOpenChange={setOpenNew}>
             <DialogTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" className="shadow-sm">
                 <Plus className="w-4 h-4 mr-2" />
                 Inserir transação
               </Button>
@@ -52,6 +59,9 @@ const Transactions = () => {
             <DialogContent className="max-w-3xl">
               <DialogHeader>
                 <DialogTitle>Inserir Transação</DialogTitle>
+                <DialogDescription>
+                  Preencha os dados da nova transação abaixo.
+                </DialogDescription>
               </DialogHeader>
               <NewTransactionForm onSuccess={() => setOpenNew(false)} />
             </DialogContent>
@@ -59,7 +69,7 @@ const Transactions = () => {
 
           <Dialog open={openOld} onOpenChange={setOpenOld}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="shadow-sm">
                 <Plus className="w-4 h-4 mr-2" />
                 Nova Transação
               </Button>
@@ -67,6 +77,9 @@ const Transactions = () => {
             <DialogContent className="max-w-3xl">
               <DialogHeader>
                 <DialogTitle>Nova Transação</DialogTitle>
+                <DialogDescription>
+                  Preencha os dados da nova transação abaixo.
+                </DialogDescription>
               </DialogHeader>
               <TransactionForm onSuccess={() => setOpenOld(false)} />
             </DialogContent>
@@ -74,11 +87,11 @@ const Transactions = () => {
         </div>
       </div>
       
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden shadow-md">
         <div className="relative overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="bg-muted/50">
                 <TableHead>Data</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead>Responsável</TableHead>
@@ -93,30 +106,42 @@ const Transactions = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center">
-                    Carregando...
+                  <TableCell colSpan={9} className="text-center py-8">
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                      <span>Carregando...</span>
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : transactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center">
-                    Nenhuma transação registrada
+                  <TableCell colSpan={9} className="text-center py-8">
+                    <p className="text-muted-foreground">Nenhuma transação registrada</p>
                   </TableCell>
                 </TableRow>
               ) : (
                 transactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
+                  <TableRow key={transaction.id} className="hover:bg-muted/50 transition-colors">
                     <TableCell>
                       {new Date(transaction.date).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       <Badge className={getTypeColor(transaction.tipo)}>
+                        {transaction.tipo === "Receita" ? (
+                          <ArrowUpCircle className="w-3 h-3 mr-1 inline" />
+                        ) : (
+                          <ArrowDownCircle className="w-3 h-3 mr-1 inline" />
+                        )}
                         {transaction.tipo}
                       </Badge>
                     </TableCell>
                     <TableCell>{transaction.responsavel}</TableCell>
                     <TableCell>{transaction.descricao}</TableCell>
-                    <TableCell>{transaction.status}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={getStatusColor(transaction.status)}>
+                        {transaction.status}
+                      </Badge>
+                    </TableCell>
                     <TableCell>{transaction.parcelas || '-'}</TableCell>
                     <TableCell>{transaction.regularidade || '-'}</TableCell>
                     <TableCell>{transaction.observacoes || '-'}</TableCell>

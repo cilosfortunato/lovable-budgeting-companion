@@ -2,18 +2,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Tables } from "@/integrations/supabase/types";
-import { useUser } from "@supabase/auth-helpers-react";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 type Transaction = Tables<"transacoes">;
 
 export const useTransactions = () => {
   const queryClient = useQueryClient();
-  const user = useUser();
+  const { session } = useAuth();
 
   const { data: transactions = [], isLoading, error } = useQuery({
     queryKey: ["transacoes"],
     queryFn: async () => {
-      if (!user) {
+      if (!session?.user) {
         throw new Error("User not authenticated");
       }
 
@@ -21,11 +21,11 @@ export const useTransactions = () => {
         .from("transacoes")
         .select(`
           *,
-          categoria:categorias(name),
+          categoria:categorias(nome),
           subcategoria:subcategorias(nome),
           account:accounts(name)
         `)
-        .eq('user_id', user.id)
+        .eq('user_id', session.user.id)
         .order("date", { ascending: false });
 
       if (error) {
@@ -35,18 +35,18 @@ export const useTransactions = () => {
 
       return data || [];
     },
-    enabled: !!user,
+    enabled: !!session?.user,
   });
 
   const createTransaction = useMutation({
     mutationFn: async (newTransaction: Omit<Transaction, "id" | "created_at">) => {
-      if (!user) {
+      if (!session?.user) {
         throw new Error("User not authenticated");
       }
 
       const { data, error } = await supabase
         .from("transacoes")
-        .insert(newTransaction)
+        .insert({ ...newTransaction, user_id: session.user.id })
         .select()
         .single();
 

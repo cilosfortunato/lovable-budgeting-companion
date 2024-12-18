@@ -69,13 +69,11 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         categoria_id: values.categoria_id,
         subcategoria_id: values.subcategoria_id,
         url_anexos: null,
-        account_id: null, // Set account_id to null since it's not used
+        account_id: null,
       });
 
-      toast.success("Transação criada com sucesso!");
       onSuccess();
     } catch (error) {
-      toast.error("Erro ao criar transação");
       console.error(error);
     }
   };

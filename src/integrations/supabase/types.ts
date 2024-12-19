@@ -9,72 +9,58 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      accounts: {
+      categorias: {
         Row: {
           created_at: string
+          familia_id: string | null
           id: string
-          initial_balance: number | null
-          name: string
+          nome: string
           type: string
-          user_id: string | null
         }
         Insert: {
           created_at?: string
+          familia_id?: string | null
           id?: string
-          initial_balance?: number | null
-          name: string
+          nome: string
           type: string
-          user_id?: string | null
         }
         Update: {
           created_at?: string
+          familia_id?: string | null
           id?: string
-          initial_balance?: number | null
-          name?: string
+          nome?: string
           type?: string
-          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "accounts_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "categorias_familia_id_fkey"
+            columns: ["familia_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
       }
-      categorias: {
+      familia: {
         Row: {
-          created_at: string
+          criado: string
           id: string
-          nome: string
-          type: string
-          user_id: string | null
+          nome: string | null
+          status: Database["public"]["Enums"]["status_familia"] | null
         }
         Insert: {
-          created_at?: string
+          criado?: string
           id?: string
-          nome: string
-          type: string
-          user_id?: string | null
+          nome?: string | null
+          status?: Database["public"]["Enums"]["status_familia"] | null
         }
         Update: {
-          created_at?: string
+          criado?: string
           id?: string
-          nome?: string
-          type?: string
-          user_id?: string | null
+          nome?: string | null
+          status?: Database["public"]["Enums"]["status_familia"] | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "categories_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       "formas de pgt": {
         Row: {
@@ -173,7 +159,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
-          familia: string | null
+          familia_id: string | null
           full_name: string | null
           id: string
           senha: string | null
@@ -181,7 +167,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          familia?: string | null
+          familia_id?: string | null
           full_name?: string | null
           id: string
           senha?: string | null
@@ -189,13 +175,21 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          familia?: string | null
+          familia_id?: string | null
           full_name?: string | null
           id?: string
           senha?: string | null
           telefone?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familia"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subcategorias: {
         Row: {
@@ -228,11 +222,11 @@ export type Database = {
       }
       transacoes: {
         Row: {
-          account_id: string | null
-          categoria_id: string | null
+          categoria_nome: string | null
           created_at: string
           date: string
           descricao: string | null
+          familia_id: string | null
           id: string
           Item: string | null
           observacoes: string | null
@@ -242,18 +236,17 @@ export type Database = {
             | null
           responsavel: string | null
           status: Database["public"]["Enums"]["status_transacoes"]
-          subcategoria_id: string | null
+          subcategoria_nome: string | null
           tipo: Database["public"]["Enums"]["tipo_despesa"]
           url_anexos: string | null
-          user_id: string | null
           valor: number
         }
         Insert: {
-          account_id?: string | null
-          categoria_id?: string | null
+          categoria_nome?: string | null
           created_at?: string
           date: string
           descricao?: string | null
+          familia_id?: string | null
           id?: string
           Item?: string | null
           observacoes?: string | null
@@ -263,18 +256,17 @@ export type Database = {
             | null
           responsavel?: string | null
           status?: Database["public"]["Enums"]["status_transacoes"]
-          subcategoria_id?: string | null
+          subcategoria_nome?: string | null
           tipo?: Database["public"]["Enums"]["tipo_despesa"]
           url_anexos?: string | null
-          user_id?: string | null
           valor: number
         }
         Update: {
-          account_id?: string | null
-          categoria_id?: string | null
+          categoria_nome?: string | null
           created_at?: string
           date?: string
           descricao?: string | null
+          familia_id?: string | null
           id?: string
           Item?: string | null
           observacoes?: string | null
@@ -284,47 +276,18 @@ export type Database = {
             | null
           responsavel?: string | null
           status?: Database["public"]["Enums"]["status_transacoes"]
-          subcategoria_id?: string | null
+          subcategoria_nome?: string | null
           tipo?: Database["public"]["Enums"]["tipo_despesa"]
           url_anexos?: string | null
-          user_id?: string | null
           valor?: number
         }
         Relationships: [
-          {
-            foreignKeyName: "transacoes_categoria_id_fkey"
-            columns: ["categoria_id"]
-            isOneToOne: false
-            referencedRelation: "categorias"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "transacoes_responsavel_fkey"
             columns: ["responsavel"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["full_name"]
-          },
-          {
-            foreignKeyName: "transacoes_subcategoria_id_fkey"
-            columns: ["subcategoria_id"]
-            isOneToOne: false
-            referencedRelation: "subcategorias"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_account_id_fkey"
-            columns: ["account_id"]
-            isOneToOne: false
-            referencedRelation: "accounts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
           },
         ]
       }
@@ -342,6 +305,7 @@ export type Database = {
         | "Trimestral"
         | "Mensal"
         | "Anual"
+      status_familia: "Ativa" | "Inativa"
       status_transacoes: "Pago" | "Programado" | "Atrasado" | "Cancelado"
       tipo_categoria:
         | "Automática"

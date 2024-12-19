@@ -67,6 +67,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         responsavel: values.responsavel,
         categoria_id: values.categoria_id,
         subcategoria_id: values.subcategoria_id,
+        url_anexos: null,
         Item: values.descricao,
       });
 

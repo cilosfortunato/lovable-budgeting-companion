@@ -54,7 +54,6 @@ const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
     if (!user) return;
 
     await createPlan.mutateAsync({
-      user_id: user.id,
       item: values.item,
       category_id: values.category,
       subcategory_id: values.subcategory,

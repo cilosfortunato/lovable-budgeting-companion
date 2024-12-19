@@ -15,52 +15,84 @@ interface PlanningTableProps {
 
 export const PlanningTable = ({ items = [] }: PlanningTableProps) => {
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "planned":
-        return "bg-blue-100 text-blue-800";
-      case "in_progress":
-        return "bg-yellow-100 text-yellow-800";
-      case "acquired":
-        return "bg-green-100 text-green-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
+    switch (status.toLowerCase()) {
+      case "planejado":
+        return "bg-primary text-primary-foreground";
+      case "em andamento":
+        return "bg-warning text-warning-foreground";
+      case "concluído":
+        return "bg-success text-success-foreground";
+      case "cancelado":
+        return "bg-destructive text-destructive-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-secondary text-secondary-foreground";
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case "alta":
+        return "bg-destructive/10 text-destructive border-destructive";
+      case "média":
+        return "bg-warning/10 text-warning border-warning";
+      case "baixa":
+        return "bg-success/10 text-success border-success";
+      default:
+        return "bg-secondary/10 text-secondary border-secondary";
     }
   };
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Item</TableHead>
-            <TableHead>Categoria</TableHead>
-            <TableHead>Valor Estimado</TableHead>
-            <TableHead>Prioridade</TableHead>
-            <TableHead>Data Prevista</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Valor Economizado</TableHead>
+    <Table>
+      <TableHeader>
+        <TableRow className="bg-muted/50">
+          <TableHead>Item</TableHead>
+          <TableHead>Valor Estimado</TableHead>
+          <TableHead>Economizado</TableHead>
+          <TableHead>Progresso</TableHead>
+          <TableHead>Prioridade</TableHead>
+          <TableHead>Data Prevista</TableHead>
+          <TableHead>Status</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {items.map((item) => (
+          <TableRow key={item.id} className="hover:bg-muted/50 cursor-pointer">
+            <TableCell className="font-medium">{item.item}</TableCell>
+            <TableCell>{formatCurrency(item.estimated_value)}</TableCell>
+            <TableCell>{formatCurrency(item.saved_amount)}</TableCell>
+            <TableCell>
+              <div className="flex items-center gap-2">
+                <div className="w-full bg-muted rounded-full h-2.5">
+                  <div
+                    className="bg-primary rounded-full h-2.5"
+                    style={{
+                      width: `${Math.min(
+                        (item.saved_amount / item.estimated_value) * 100,
+                        100
+                      )}%`,
+                    }}
+                  ></div>
+                </div>
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  {((item.saved_amount / item.estimated_value) * 100).toFixed(1)}%
+                </span>
+              </div>
+            </TableCell>
+            <TableCell>
+              <Badge variant="outline" className={getPriorityColor(item.priority)}>
+                {item.priority}
+              </Badge>
+            </TableCell>
+            <TableCell>
+              {new Date(item.expected_date).toLocaleDateString("pt-BR")}
+            </TableCell>
+            <TableCell>
+              <Badge className={getStatusColor(item.status)}>{item.status}</Badge>
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.item}</TableCell>
-              <TableCell>{item.category}</TableCell>
-              <TableCell>{formatCurrency(item.estimatedValue)}</TableCell>
-              <TableCell>
-                <Badge variant="outline">{item.priority}</Badge>
-              </TableCell>
-              <TableCell>{new Date(item.expectedDate).toLocaleDateString()}</TableCell>
-              <TableCell>
-                <Badge className={getStatusColor(item.status)}>{item.status}</Badge>
-              </TableCell>
-              <TableCell>{formatCurrency(item.savedAmount)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        ))}
+      </TableBody>
+    </Table>
   );
 };

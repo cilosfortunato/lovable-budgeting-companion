@@ -7,9 +7,8 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ResponsibleField } from "./fields/ResponsibleField";
-import { CategoryFields } from "./fields/CategoryFields";
 import { InstallmentFields } from "./fields/InstallmentFields";
-import { AlignLeft, DollarSign, Calendar, ListFilter, Tag, FileText, User } from "lucide-react";
+import { AlignLeft, DollarSign, Calendar, ListFilter, Tag } from "lucide-react";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -22,15 +21,16 @@ const formSchema = z.object({
   parcelas: z.string().optional(),
   regularidade: z.enum(["Único", "Semanal", "Trimestral", "Mensal", "Anual"]).optional(),
   observacoes: z.string().optional(),
-  categoria_id: z.string().min(1, "Categoria é obrigatória"),
-  subcategoria_id: z.string().min(1, "Subcategoria é obrigatória"),
+  categoria_id: z.string().default("automatica"),
+  subcategoria_id: z.string().default("automatica"),
 });
 
 interface TransactionFormFieldsProps {
   onSubmit: (values: z.infer<typeof formSchema>) => void;
+  defaultValues?: Partial<z.infer<typeof formSchema>>;
 }
 
-export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) => {
+export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFormFieldsProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,6 +41,7 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
       regularidade: "Único",
       categoria_id: "automatica",
       subcategoria_id: "automatica",
+      ...defaultValues,
     },
   });
 
@@ -142,7 +143,7 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="date"
@@ -160,7 +161,7 @@ export const TransactionFormFields = ({ onSubmit }: TransactionFormFieldsProps) 
             )}
           />
 
-          <CategoryFields form={form} />
+          <ResponsibleField form={form} />
         </div>
 
         <InstallmentFields form={form} />

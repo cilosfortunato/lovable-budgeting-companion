@@ -69,10 +69,42 @@ export const useTransactions = () => {
     },
   });
 
+  const updateTransaction = useMutation({
+    mutationFn: async (updatedTransaction: Partial<Transaction> & { id: string }) => {
+      if (!session?.user) {
+        throw new Error("User not authenticated");
+      }
+
+      const { data, error } = await supabase
+        .from("transacoes")
+        .update(updatedTransaction)
+        .eq("id", updatedTransaction.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating transaction:", error);
+        toast.error("Erro ao atualizar transação");
+        throw error;
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transacoes"] });
+      toast.success("Transação atualizada com sucesso!");
+    },
+    onError: (error) => {
+      console.error("Erro ao atualizar transação:", error);
+      toast.error("Erro ao atualizar transação. Por favor, tente novamente.");
+    },
+  });
+
   return {
     transactions,
     isLoading,
     error,
     createTransaction,
+    updateTransaction,
   };
 };

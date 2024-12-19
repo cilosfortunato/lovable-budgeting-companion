@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
@@ -18,6 +18,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { EditTransactionForm } from "./EditTransactionForm";
 
@@ -28,6 +29,30 @@ interface TransactionRowProps {
 
 export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const rowRef = useRef<HTMLTableRowElement>(null);
+
+  useEffect(() => {
+    let rafId: number;
+    const observer = new ResizeObserver((entries) => {
+      // Use requestAnimationFrame to batch resize notifications
+      rafId = requestAnimationFrame(() => {
+        entries.forEach(() => {
+          // Handle resize if needed
+        });
+      });
+    });
+
+    if (rowRef.current) {
+      observer.observe(rowRef.current);
+    }
+
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+      observer.disconnect();
+    };
+  }, []);
 
   const getTypeColor = (tipo: string) => {
     switch (tipo) {
@@ -62,6 +87,7 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
   return (
     <>
       <tr 
+        ref={rowRef}
         className="hover:bg-muted/50 transition-colors cursor-pointer"
         onClick={handleRowClick}
       >
@@ -118,6 +144,9 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>Editar Transação</DialogTitle>
+            <DialogDescription>
+              Faça as alterações necessárias na transação abaixo.
+            </DialogDescription>
           </DialogHeader>
           <EditTransactionForm 
             transaction={transaction} 

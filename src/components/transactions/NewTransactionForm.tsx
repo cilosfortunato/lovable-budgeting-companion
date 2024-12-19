@@ -67,9 +67,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         responsavel: values.responsavel,
         categoria_id: values.categoria_id,
         subcategoria_id: values.subcategoria_id,
-        url_anexos: null,
-        account_type: "checking",
-        Item: values.descricao || 'Item',
+        Item: values.descricao,
       });
 
       onSuccess();

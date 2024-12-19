@@ -21,11 +21,9 @@ export const useTransactions = () => {
         .from("transacoes")
         .select(`
           *,
-          categoria:categorias(nome),
-          subcategoria:subcategorias(nome),
-          account:accounts(name)
+          categoria:categorias(id, nome),
+          subcategoria:subcategorias(id, nome)
         `)
-        .eq('user_id', session.user.id)
         .order("date", { ascending: false });
 
       if (error) {
@@ -46,7 +44,7 @@ export const useTransactions = () => {
 
       const { data, error } = await supabase
         .from("transacoes")
-        .insert({ ...newTransaction, user_id: session.user.id })
+        .insert(newTransaction)
         .select()
         .single();
 

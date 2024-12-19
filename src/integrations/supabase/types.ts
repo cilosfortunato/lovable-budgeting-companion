@@ -232,7 +232,7 @@ export type Database = {
       }
       transacoes: {
         Row: {
-          categoria_nome: string | null
+          categoria_id: string | null
           created_at: string
           date: string
           descricao: string | null
@@ -246,13 +246,13 @@ export type Database = {
             | null
           responsavel: string | null
           status: Database["public"]["Enums"]["status_transacoes"]
-          subcategoria_nome: string | null
+          subcategoria_id: string | null
           tipo: Database["public"]["Enums"]["tipo_despesa"]
           url_anexos: string | null
           valor: number
         }
         Insert: {
-          categoria_nome?: string | null
+          categoria_id?: string | null
           created_at?: string
           date: string
           descricao?: string | null
@@ -266,13 +266,13 @@ export type Database = {
             | null
           responsavel?: string | null
           status?: Database["public"]["Enums"]["status_transacoes"]
-          subcategoria_nome?: string | null
+          subcategoria_id?: string | null
           tipo?: Database["public"]["Enums"]["tipo_despesa"]
           url_anexos?: string | null
           valor: number
         }
         Update: {
-          categoria_nome?: string | null
+          categoria_id?: string | null
           created_at?: string
           date?: string
           descricao?: string | null
@@ -286,18 +286,32 @@ export type Database = {
             | null
           responsavel?: string | null
           status?: Database["public"]["Enums"]["status_transacoes"]
-          subcategoria_nome?: string | null
+          subcategoria_id?: string | null
           tipo?: Database["public"]["Enums"]["tipo_despesa"]
           url_anexos?: string | null
           valor?: number
         }
         Relationships: [
           {
+            foreignKeyName: "transacoes_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transacoes_responsavel_fkey"
             columns: ["responsavel"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["full_name"]
+          },
+          {
+            foreignKeyName: "transacoes_subcategoria_id_fkey"
+            columns: ["subcategoria_id"]
+            isOneToOne: false
+            referencedRelation: "subcategorias"
+            referencedColumns: ["id"]
           },
         ]
       }

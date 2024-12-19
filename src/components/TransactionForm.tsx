@@ -29,7 +29,7 @@ const formSchema = z.object({
   valor: z.string().min(1, "Valor é obrigatório"),
   descricao: z.string().min(3, "Descrição deve ter pelo menos 3 caracteres"),
   categoria_id: z.string().min(1, "Categoria é obrigatória"),
-  account_id: z.string().min(1, "Conta é obrigatória"),
+  account_type: z.string().min(1, "Conta é obrigatória"),
   date: z.string().min(1, "Data é obrigatória"),
   observacoes: z.string().optional(),
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -61,7 +61,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       valor: "",
       descricao: "",
       categoria_id: "",
-      account_id: "",
+      account_type: "",
       date: new Date().toISOString().split("T")[0],
       observacoes: "",
       responsavel: "",
@@ -72,12 +72,11 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
     if (!user) return;
 
     await createTransaction.mutateAsync({
-      user_id: user.id,
       tipo: values.tipo,
       valor: parseFloat(values.valor),
       descricao: values.descricao,
       categoria_id: values.categoria_id,
-      account_id: values.account_id,
+      account_type: values.account_type,
       date: values.date,
       subcategoria_id: null,
       url_anexos: null,
@@ -86,7 +85,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       status: "Programado",
       observacoes: values.observacoes || null,
       responsavel: values.responsavel,
-      Item: values.descricao || 'Item', // Set Item to description or default to 'Item'
+      Item: values.descricao || 'Item',
     });
 
     onSuccess();
@@ -184,7 +183,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
 
           <FormField
             control={form.control}
-            name="account_id"
+            name="account_type"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Conta</FormLabel>

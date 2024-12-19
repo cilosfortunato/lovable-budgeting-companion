@@ -11,8 +11,6 @@ import { InstallmentFields } from "./fields/InstallmentFields";
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { DescriptionField } from "./fields/DescriptionField";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -37,41 +35,6 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
   const { createTransaction } = useTransactions();
   const { session } = useAuth();
 
-  // Fetch the automatic category and subcategory IDs
-  const { data: automaticCategory } = useQuery({
-    queryKey: ["automatic-category"],
-    queryFn: async () => {
-      const { data: category } = await supabase
-        .from("categorias")
-        .select("id")
-        .eq("nome", "Automática")
-        .single();
-      
-      if (!category) {
-        throw new Error("Automatic category not found");
-      }
-      
-      return category;
-    },
-  });
-
-  const { data: automaticSubcategory } = useQuery({
-    queryKey: ["automatic-subcategory"],
-    queryFn: async () => {
-      const { data: subcategory } = await supabase
-        .from("subcategorias")
-        .select("id")
-        .eq("nome", "Automática")
-        .single();
-      
-      if (!subcategory) {
-        throw new Error("Automatic subcategory not found");
-      }
-      
-      return subcategory;
-    },
-  });
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -80,8 +43,8 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
       date: new Date().toISOString().split("T")[0],
       parcelado: false,
       regularidade: "Único",
-      categoria_id: automaticCategory?.id || "",
-      subcategoria_id: automaticSubcategory?.id || "",
+      categoria_id: "",
+      subcategoria_id: "",
     },
   });
 
@@ -91,14 +54,8 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
       return;
     }
 
-    if (!automaticCategory?.id || !automaticSubcategory?.id) {
-      toast.error("Erro ao carregar categorias automáticas");
-      return;
-    }
-
     try {
       await createTransaction.mutateAsync({
-        user_id: session.user.id,
         tipo: values.tipo,
         valor: parseFloat(values.valor),
         descricao: values.descricao,
@@ -108,11 +65,11 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         regularidade: values.regularidade || "Único",
         observacoes: values.observacoes,
         responsavel: values.responsavel,
-        categoria_id: values.categoria_id || automaticCategory.id,
-        subcategoria_id: values.subcategoria_id || automaticSubcategory.id,
+        categoria_id: values.categoria_id,
+        subcategoria_id: values.subcategoria_id,
         url_anexos: null,
-        account_id: null,
-        Item: values.descricao || 'Item', // Set Item to description or default to 'Item'
+        account_type: "checking",
+        Item: values.descricao || 'Item',
       });
 
       onSuccess();

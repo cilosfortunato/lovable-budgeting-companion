@@ -34,7 +34,7 @@ export const BasicFields = ({ form }: { form: any }) => {
             </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-primary text-white">
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
               </FormControl>

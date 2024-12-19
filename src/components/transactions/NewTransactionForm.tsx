@@ -6,11 +6,11 @@ import { Form } from "@/components/ui/form";
 import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
 import { BasicFields } from "./fields/BasicFields";
-import { CategoryFields } from "./fields/CategoryFields";
 import { InstallmentFields } from "./fields/InstallmentFields";
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { DescriptionField } from "./fields/DescriptionField";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { StatusField } from "./fields/StatusField";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -23,8 +23,8 @@ const formSchema = z.object({
   parcelas: z.string().optional(),
   regularidade: z.enum(["Único", "Semanal", "Trimestral", "Mensal", "Anual"]).optional(),
   observacoes: z.string().optional(),
-  categoria_id: z.string().min(1, "Categoria é obrigatória"),
-  subcategoria_id: z.string().min(1, "Subcategoria é obrigatória"),
+  categoria_id: z.string().default("Automática"),
+  subcategoria_id: z.string().default("Automática"),
 });
 
 interface NewTransactionFormProps {
@@ -43,8 +43,8 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
       date: new Date().toISOString().split("T")[0],
       parcelado: false,
       regularidade: "Único",
-      categoria_id: "",
-      subcategoria_id: "",
+      categoria_id: "Automática",
+      subcategoria_id: "Automática",
     },
   });
 
@@ -84,16 +84,16 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-4 gap-4">
-          <div className="col-span-3">
+          <div className="col-span-4">
             <DescriptionField form={form} />
-          </div>
-          <div className="col-span-1">
-            <BasicFields form={form} />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <BasicFields form={form} />
+          <StatusField form={form} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ResponsibleField form={form} />
-          <CategoryFields form={form} />
         </div>
         <InstallmentFields form={form} />
         <Button type="submit" className="w-full">

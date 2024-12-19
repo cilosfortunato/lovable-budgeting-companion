@@ -87,6 +87,7 @@ export type Database = {
           description: string | null
           estimated_value: number
           expected_date: string
+          familia_id: string | null
           id: string
           item: string
           observacoes: string | null
@@ -104,6 +105,7 @@ export type Database = {
           description?: string | null
           estimated_value: number
           expected_date: string
+          familia_id?: string | null
           id?: string
           item: string
           observacoes?: string | null
@@ -121,6 +123,7 @@ export type Database = {
           description?: string | null
           estimated_value?: number
           expected_date?: string
+          familia_id?: string | null
           id?: string
           item?: string
           observacoes?: string | null
@@ -133,6 +136,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "planejamento_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familia"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "shopping_plans_category_id_fkey"
             columns: ["category_id"]

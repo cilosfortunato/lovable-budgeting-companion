@@ -28,12 +28,15 @@ export const useTransactions = () => {
 
       if (error) {
         console.error("Error fetching transactions:", error);
+        toast.error("Erro ao carregar transações");
         throw error;
       }
 
       return data || [];
     },
     enabled: !!session?.user,
+    retry: 1,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const createTransaction = useMutation({
@@ -50,6 +53,7 @@ export const useTransactions = () => {
 
       if (error) {
         console.error("Error creating transaction:", error);
+        toast.error("Erro ao criar transação");
         throw error;
       }
 

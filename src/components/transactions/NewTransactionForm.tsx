@@ -23,8 +23,8 @@ const formSchema = z.object({
   parcelas: z.string().optional(),
   regularidade: z.enum(["Único", "Semanal", "Trimestral", "Mensal", "Anual"]).optional(),
   observacoes: z.string().optional(),
-  categoria_id: z.string().default("Automática"),
-  subcategoria_id: z.string().default("Automática"),
+  categoria_id: z.string().nullable(),
+  subcategoria_id: z.string().nullable(),
 });
 
 interface NewTransactionFormProps {
@@ -43,8 +43,8 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
       date: new Date().toISOString().split("T")[0],
       parcelado: false,
       regularidade: "Único",
-      categoria_id: "Automática",
-      subcategoria_id: "Automática",
+      categoria_id: null,
+      subcategoria_id: null,
     },
   });
 
@@ -65,8 +65,8 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         regularidade: values.regularidade || "Único",
         observacoes: values.observacoes,
         responsavel: values.responsavel,
-        categoria_id: values.categoria_id,
-        subcategoria_id: values.subcategoria_id,
+        categoria_id: null,
+        subcategoria_id: null,
         url_anexos: null,
         Item: values.descricao,
         familia_id: null, // This will be set by the database trigger

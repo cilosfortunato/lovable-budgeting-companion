@@ -47,7 +47,11 @@ export const useTransactions = () => {
 
       const { data, error } = await supabase
         .from("transacoes")
-        .insert(newTransaction)
+        .insert({
+          ...newTransaction,
+          categoria_id: null,
+          subcategoria_id: null,
+        })
         .select()
         .single();
 

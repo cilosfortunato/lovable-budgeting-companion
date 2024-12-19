@@ -54,6 +54,7 @@ const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
     if (!user) return;
 
     await createPlan.mutateAsync({
+      user_id: user.id,
       item: values.item,
       category_id: values.category,
       subcategory_id: values.subcategory,
@@ -66,6 +67,7 @@ const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
       parcelas: values.parcelado ? parseInt(values.parcelas || "0") : 0,
       regularidade: values.parcelado ? values.regularidade : null,
       observacoes: values.parcelado ? values.observacoes : null,
+      familia_id: null, // This will be set by the database trigger
     });
 
     onSuccess();

@@ -69,6 +69,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         subcategoria_id: values.subcategoria_id,
         url_anexos: null,
         Item: values.descricao,
+        familia_id: null, // This will be set by the database trigger
       });
 
       onSuccess();

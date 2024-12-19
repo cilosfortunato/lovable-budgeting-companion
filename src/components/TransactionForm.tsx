@@ -1,6 +1,6 @@
 import { useTransactions } from "@/hooks/useTransactions";
 import { useUser } from "@supabase/auth-helpers-react";
-import { TransactionFormFields } from "./TransactionFormFields";
+import { TransactionFormFields } from "./transactions/TransactionFormFields";
 
 interface TransactionFormProps {
   onSuccess: () => void;
@@ -27,6 +27,7 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       url_anexos: null,
       responsavel: values.responsavel,
       Item: values.descricao,
+      familia_id: null, // This will be set by the database trigger
     });
 
     onSuccess();

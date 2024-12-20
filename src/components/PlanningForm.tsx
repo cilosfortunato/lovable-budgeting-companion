@@ -51,6 +51,12 @@ const PlanningForm = ({ onSuccess }: PlanningFormProps) => {
       status: values.status,
       saved_amount: parseFloat(values.saved_amount),
       familia_id: null, // This will be set by the database trigger
+      // Adding default values for required fields that aren't in the UI
+      category_id: null,
+      subcategory_id: null,
+      observacoes: null,
+      parcelas: 0,
+      regularidade: 'Único',
     });
 
     onSuccess();

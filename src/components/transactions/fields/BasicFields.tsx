@@ -11,12 +11,18 @@ export const BasicFields = ({ form }: { form: any }) => {
         name="valor"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
+            <FormLabel className="flex items-center gap-2 text-sm font-medium">
+              <DollarSign className="h-4 w-4 text-primary" />
               Valor
             </FormLabel>
             <FormControl>
-              <Input type="number" step="0.01" placeholder="0,00" {...field} />
+              <Input 
+                type="number" 
+                step="0.01" 
+                placeholder="0,00" 
+                {...field}
+                className="bg-white border-gray-200 focus:border-primary focus:ring-primary"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -28,13 +34,13 @@ export const BasicFields = ({ form }: { form: any }) => {
         name="tipo"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              <ListFilter className="h-4 w-4" />
+            <FormLabel className="flex items-center gap-2 text-sm font-medium">
+              <ListFilter className="h-4 w-4 text-primary" />
               Tipo
             </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="bg-primary text-white">
+                <SelectTrigger className="bg-primary text-white border-0">
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
               </FormControl>
@@ -53,12 +59,16 @@ export const BasicFields = ({ form }: { form: any }) => {
         name="date"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
+            <FormLabel className="flex items-center gap-2 text-sm font-medium">
+              <Calendar className="h-4 w-4 text-primary" />
               Data
             </FormLabel>
             <FormControl>
-              <Input type="date" {...field} />
+              <Input 
+                type="date" 
+                {...field}
+                className="bg-white border-gray-200 focus:border-primary focus:ring-primary"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

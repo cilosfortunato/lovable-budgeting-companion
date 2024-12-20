@@ -9,13 +9,13 @@ export const StatusField = ({ form }: { form: any }) => {
       name="status"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="flex items-center gap-2">
-            <Tag className="h-4 w-4" />
+          <FormLabel className="flex items-center gap-2 text-sm font-medium">
+            <Tag className="h-4 w-4 text-primary" />
             Status
           </FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="bg-primary text-white border-0">
                 <SelectValue placeholder="Selecione o status" />
               </SelectTrigger>
             </FormControl>

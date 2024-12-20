@@ -69,7 +69,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         subcategoria_id: null,
         url_anexos: null,
         Item: values.descricao,
-        familia_id: null, // This will be set by the database trigger
+        familia_id: null,
       });
 
       onSuccess();
@@ -82,22 +82,30 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-4 gap-4">
-          <div className="col-span-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="bg-white/50 p-6 rounded-lg shadow-sm space-y-6">
+          <div className="space-y-4">
             <DescriptionField form={form} />
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <BasicFields form={form} />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <StatusField form={form} />
+              <ResponsibleField form={form} />
+              <div className="col-span-1">
+                <InstallmentFields form={form} />
+              </div>
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <BasicFields form={form} />
-          <StatusField form={form} />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ResponsibleField form={form} />
-        </div>
-        <InstallmentFields form={form} />
-        <Button type="submit" className="w-full">
-          Salvar
+
+        <Button 
+          type="submit" 
+          className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5"
+        >
+          Salvar Transação
         </Button>
       </form>
     </Form>

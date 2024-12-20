@@ -80,6 +80,59 @@ export type Database = {
         }
         Relationships: []
       }
+      metas: {
+        Row: {
+          created_at: string
+          familia_id: string | null
+          id: string
+          meta: number | null
+          nome: string | null
+        }
+        Insert: {
+          created_at?: string
+          familia_id?: string | null
+          id?: string
+          meta?: number | null
+          nome?: string | null
+        }
+        Update: {
+          created_at?: string
+          familia_id?: string | null
+          id?: string
+          meta?: number | null
+          nome?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "familia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_id_fkey1"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "familia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_id_fkey2"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "familia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_id_fkey3"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "familia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       planejamento: {
         Row: {
           category_id: string | null

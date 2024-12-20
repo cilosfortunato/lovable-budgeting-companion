@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
@@ -21,6 +21,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { EditTransactionForm } from "./EditTransactionForm";
+import { useTransactions } from "@/hooks/useTransactions";
+import { toast } from "sonner";
 
 interface TransactionRowProps {
   transaction: any;
@@ -29,30 +31,8 @@ interface TransactionRowProps {
 
 export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const { updateTransaction } = useTransactions();
   const rowRef = useRef<HTMLTableRowElement>(null);
-
-  useEffect(() => {
-    let rafId: number;
-    const observer = new ResizeObserver((entries) => {
-      // Use requestAnimationFrame to batch resize notifications
-      rafId = requestAnimationFrame(() => {
-        entries.forEach(() => {
-          // Handle resize if needed
-        });
-      });
-    });
-
-    if (rowRef.current) {
-      observer.observe(rowRef.current);
-    }
-
-    return () => {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
-      observer.disconnect();
-    };
-  }, []);
 
   const getTypeColor = (tipo: string) => {
     switch (tipo) {
@@ -80,8 +60,28 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
     return format(new Date(date), "dd/MM/yyyy", { locale: ptBR });
   };
 
-  const handleRowClick = () => {
+  const handleRowClick = (e: React.MouseEvent) => {
+    // Prevent row click when clicking status badge
+    if ((e.target as HTMLElement).closest('.status-badge')) {
+      return;
+    }
     setIsEditing(true);
+  };
+
+  const handleStatusClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (transaction.status === "Programado") {
+      try {
+        await updateTransaction.mutateAsync({
+          ...transaction,
+          status: "Pago"
+        });
+        toast.success("Status atualizado com sucesso!");
+        onUpdate();
+      } catch (error) {
+        toast.error("Erro ao atualizar status");
+      }
+    }
   };
 
   return (
@@ -117,7 +117,10 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
           </Badge>
         </td>
         <td>
-          <Badge className={getStatusColor(transaction.status)}>
+          <Badge 
+            className={`status-badge ${getStatusColor(transaction.status)} cursor-pointer`}
+            onClick={handleStatusClick}
+          >
             {transaction.status === "Pago" ? (
               <Check className="w-3 h-3 mr-1 inline" />
             ) : (

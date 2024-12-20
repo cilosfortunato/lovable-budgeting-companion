@@ -50,7 +50,7 @@ export function DashboardFilters({
       {/* Totals Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-          <div className="text-sm text-green-600 font-medium">Total Recebido</div>
+          <div className="text-sm text-green-600 font-medium">Pago</div>
           <div className="text-2xl font-bold text-green-700">
             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalReceived)}
           </div>
@@ -61,55 +61,6 @@ export function DashboardFilters({
             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPending)}
           </div>
         </div>
-      </div>
-
-      {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Input
-          placeholder="Buscar por Item..."
-          value={searchItem}
-          onChange={(e) => onSearchItemChange(e.target.value)}
-          className="w-full"
-        />
-
-        <Select value={selectedStatus} onValueChange={onStatusChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="Pago">Pago</SelectItem>
-            <SelectItem value="Programado">Programado</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={selectedRegularity} onValueChange={onRegularityChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="Regularidade" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas</SelectItem>
-            <SelectItem value="Mensal">Mensal</SelectItem>
-            <SelectItem value="Semanal">Semanal</SelectItem>
-            <SelectItem value="Trimestral">Trimestral</SelectItem>
-            <SelectItem value="Anual">Anual</SelectItem>
-            <SelectItem value="Único">Único</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={selectedResponsible} onValueChange={onResponsibleChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="Responsável" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            {profiles.map((profile) => (
-              <SelectItem key={profile.full_name} value={profile.full_name}>
-                {profile.full_name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
     </div>
   );

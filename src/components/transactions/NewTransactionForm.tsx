@@ -82,7 +82,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-h-[70vh] overflow-y-auto pr-4">
         <div className="bg-white/50 p-6 rounded-lg shadow-sm space-y-6">
           <div className="space-y-4">
             <DescriptionField form={form} />

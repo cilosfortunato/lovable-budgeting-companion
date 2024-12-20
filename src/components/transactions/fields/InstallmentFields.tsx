@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { FileText, Calendar } from "lucide-react";
+import { Calendar, FileText } from "lucide-react";
 
 export const InstallmentFields = ({ form }: { form: any }) => {
   const isParcelado = form.watch("parcelado");
@@ -14,9 +14,9 @@ export const InstallmentFields = ({ form }: { form: any }) => {
         control={form.control}
         name="parcelado"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white">
             <div className="space-y-0.5">
-              <FormLabel>Parcelado</FormLabel>
+              <FormLabel className="text-base">Parcelado</FormLabel>
             </div>
             <FormControl>
               <Switch
@@ -29,7 +29,7 @@ export const InstallmentFields = ({ form }: { form: any }) => {
       />
 
       {isParcelado && (
-        <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+        <div className="space-y-4 bg-gray-50/50 p-4 rounded-lg border">
           <FormField
             control={form.control}
             name="parcelas"
@@ -94,7 +94,7 @@ export const InstallmentFields = ({ form }: { form: any }) => {
                 <FormControl>
                   <Textarea 
                     placeholder="Digite as observações"
-                    className="bg-white border-gray-200 focus:border-primary focus:ring-primary"
+                    className="bg-white border-gray-200 focus:border-primary focus:ring-primary resize-none"
                     {...field}
                   />
                 </FormControl>

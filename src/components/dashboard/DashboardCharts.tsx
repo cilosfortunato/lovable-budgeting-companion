@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
   BarChart,
@@ -35,29 +35,31 @@ export function DashboardCharts({
 }: DashboardChartsProps) {
   const barChartRef = useRef<HTMLDivElement>(null);
   const pieChartRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    let rafId: number;
+    let timeoutId: NodeJS.Timeout;
     const observer = new ResizeObserver((entries) => {
-      // Use requestAnimationFrame to batch resize notifications
-      rafId = requestAnimationFrame(() => {
-        entries.forEach(() => {
-          // Handle resize if needed in the future
+      // Debounce resize events
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        entries.forEach((entry) => {
+          setDimensions({
+            width: entry.contentRect.width,
+            height: entry.contentRect.height,
+          });
         });
-      });
+      }, 100); // 100ms debounce
     });
 
-    if (barChartRef.current) {
-      observer.observe(barChartRef.current);
-    }
-    if (pieChartRef.current) {
-      observer.observe(pieChartRef.current);
-    }
+    const barChart = barChartRef.current;
+    const pieChart = pieChartRef.current;
+
+    if (barChart) observer.observe(barChart);
+    if (pieChart) observer.observe(pieChart);
 
     return () => {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
+      clearTimeout(timeoutId);
       observer.disconnect();
     };
   }, []);

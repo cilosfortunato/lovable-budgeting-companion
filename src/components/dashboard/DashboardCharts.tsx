@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import {
   BarChart,
@@ -32,6 +33,35 @@ export function DashboardCharts({
   planningStatusData,
   windowWidth,
 }: DashboardChartsProps) {
+  const barChartRef = useRef<HTMLDivElement>(null);
+  const pieChartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let rafId: number;
+    const observer = new ResizeObserver((entries) => {
+      // Use requestAnimationFrame to batch resize notifications
+      rafId = requestAnimationFrame(() => {
+        entries.forEach(() => {
+          // Handle resize if needed in the future
+        });
+      });
+    });
+
+    if (barChartRef.current) {
+      observer.observe(barChartRef.current);
+    }
+    if (pieChartRef.current) {
+      observer.observe(pieChartRef.current);
+    }
+
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+      observer.disconnect();
+    };
+  }, []);
+
   const getChartHeight = () => windowWidth < 768 ? 200 : 300;
 
   const formatCurrency = (value: number) => {
@@ -45,7 +75,7 @@ export function DashboardCharts({
           <TrendingUp className="w-5 h-5" />
           Fluxo de Caixa Mensal
         </h2>
-        <div style={{ height: getChartHeight() }}>
+        <div ref={barChartRef} style={{ height: getChartHeight() }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -65,7 +95,7 @@ export function DashboardCharts({
           <Target className="w-5 h-5" />
           Status dos Planejamentos
         </h2>
-        <div style={{ height: getChartHeight() }} className="flex items-center justify-center">
+        <div ref={pieChartRef} style={{ height: getChartHeight() }} className="flex items-center justify-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie

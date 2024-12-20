@@ -300,6 +300,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "transacoes_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familia"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transacoes_responsavel_fkey"
             columns: ["responsavel"]
             isOneToOne: false

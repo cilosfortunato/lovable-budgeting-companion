@@ -14,9 +14,9 @@ export const InstallmentFields = ({ form }: { form: any }) => {
         control={form.control}
         name="parcelado"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm bg-white/80">
             <div className="space-y-0.5">
-              <FormLabel className="text-base">Parcelado</FormLabel>
+              <FormLabel className="text-base font-medium text-gray-900">Parcelado</FormLabel>
             </div>
             <FormControl>
               <Switch
@@ -29,13 +29,13 @@ export const InstallmentFields = ({ form }: { form: any }) => {
       />
 
       {isParcelado && (
-        <div className="space-y-4 bg-gray-50/50 p-4 rounded-lg border">
+        <div className="space-y-4 bg-gray-50/50 p-4 rounded-lg border shadow-sm">
           <FormField
             control={form.control}
             name="parcelas"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-2 text-sm font-medium">
+                <FormLabel className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Calendar className="h-4 w-4 text-primary" />
                   Quantas parcelas?
                 </FormLabel>
@@ -59,7 +59,7 @@ export const InstallmentFields = ({ form }: { form: any }) => {
             name="regularidade"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-2 text-sm font-medium">
+                <FormLabel className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Calendar className="h-4 w-4 text-primary" />
                   Regularidade
                 </FormLabel>
@@ -87,14 +87,14 @@ export const InstallmentFields = ({ form }: { form: any }) => {
             name="observacoes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-2 text-sm font-medium">
+                <FormLabel className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <FileText className="h-4 w-4 text-primary" />
                   Observações
                 </FormLabel>
                 <FormControl>
                   <Textarea 
                     placeholder="Digite as observações"
-                    className="bg-white border-gray-200 focus:border-primary focus:ring-primary resize-none"
+                    className="bg-white border-gray-200 focus:border-primary focus:ring-primary resize-none h-24"
                     {...field}
                   />
                 </FormControl>

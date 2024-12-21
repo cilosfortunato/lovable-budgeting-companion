@@ -21,11 +21,11 @@ export const useTransactions = () => {
         .from("transacoes")
         .select(`
           *,
-          categorias!transacoes_categoria_id_fkey (
+          categorias (
             id,
             nome
           ),
-          subcategorias!transacoes_subcategoria_id_fkey (
+          subcategorias (
             id,
             nome
           )
@@ -56,11 +56,11 @@ export const useTransactions = () => {
         .insert(newTransaction)
         .select(`
           *,
-          categorias!transacoes_categoria_id_fkey (
+          categorias (
             id,
             nome
           ),
-          subcategorias!transacoes_subcategoria_id_fkey (
+          subcategorias (
             id,
             nome
           )
@@ -97,11 +97,11 @@ export const useTransactions = () => {
         .eq("id", updatedTransaction.id)
         .select(`
           *,
-          categorias!transacoes_categoria_id_fkey (
+          categorias (
             id,
             nome
           ),
-          subcategorias!transacoes_subcategoria_id_fkey (
+          subcategorias (
             id,
             nome
           )

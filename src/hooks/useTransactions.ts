@@ -21,8 +21,8 @@ export const useTransactions = () => {
         .from("transacoes")
         .select(`
           *,
-          categoria:categorias(id, nome),
-          subcategoria:subcategorias(id, nome)
+          categorias!transacoes_categoria_id_fkey(id, nome),
+          subcategorias!transacoes_subcategoria_id_fkey(id, nome)
         `)
         .order("date", { ascending: false });
 
@@ -50,8 +50,8 @@ export const useTransactions = () => {
         .insert(newTransaction)
         .select(`
           *,
-          categoria:categorias(id, nome),
-          subcategoria:subcategorias(id, nome)
+          categorias!transacoes_categoria_id_fkey(id, nome),
+          subcategorias!transacoes_subcategoria_id_fkey(id, nome)
         `)
         .single();
 
@@ -85,8 +85,8 @@ export const useTransactions = () => {
         .eq("id", updatedTransaction.id)
         .select(`
           *,
-          categoria:categorias(id, nome),
-          subcategoria:subcategorias(id, nome)
+          categorias!transacoes_categoria_id_fkey(id, nome),
+          subcategorias!transacoes_subcategoria_id_fkey(id, nome)
         `)
         .single();
 

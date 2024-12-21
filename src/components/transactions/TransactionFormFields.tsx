@@ -13,6 +13,9 @@ import { StatusField } from "./fields/StatusField";
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { InstallmentFields } from "./fields/InstallmentFields";
 
+const regularidadeEnum = ["Único", "Semanal", "Trimestral", "Mensal", "Anual"] as const;
+type RegularidadeType = typeof regularidadeEnum[number];
+
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
   descricao: z.string().min(3, "Descrição deve ter pelo menos 3 caracteres"),
@@ -22,7 +25,7 @@ const formSchema = z.object({
   date: z.string().min(1, "Data é obrigatória"),
   parcelado: z.boolean().default(false),
   parcelas: z.string().optional(),
-  regularidade: z.enum(["Único", "Semanal", "Trimestral", "Mensal", "Anual"]).optional(),
+  regularidade: z.enum(regularidadeEnum).optional(),
   observacoes: z.string().optional(),
   categoria_id: z.string().default("automatica"),
   subcategoria_id: z.string().default("automatica"),
@@ -76,7 +79,7 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
         valor: planningData.estimated_value.toString(),
         observacoes: planningData.observacoes,
         parcelas: planningData.parcelas?.toString(),
-        regularidade: planningData.regularidade,
+        regularidade: planningData.regularidade as RegularidadeType,
       }),
     },
   });

@@ -3,25 +3,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tag } from "lucide-react";
 
 export const StatusField = ({ form }: { form: any }) => {
+  const tipoTransacao = form.watch("tipo");
+
   return (
     <FormField
       control={form.control}
       name="status"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="flex items-center gap-2 text-sm font-medium">
+          <FormLabel className="flex items-center gap-2">
             <Tag className="h-4 w-4 text-primary" />
             Status
           </FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
-              <SelectTrigger className="bg-primary text-white border-0">
+              <SelectTrigger className="bg-white border-gray-200 focus:border-primary focus:ring-primary">
                 <SelectValue placeholder="Selecione o status" />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Pago">Pago</SelectItem>
               <SelectItem value="Programado">Programado</SelectItem>
+              {tipoTransacao === "Despesa" ? (
+                <SelectItem value="Pago">Pago</SelectItem>
+              ) : (
+                <SelectItem value="Recebido">Recebido</SelectItem>
+              )}
             </SelectContent>
           </Select>
           <FormMessage />

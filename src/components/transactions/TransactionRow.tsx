@@ -11,7 +11,8 @@ import {
   User,
   Package,
   Check,
-  Clock4
+  CheckCircle2,
+  Circle
 } from "lucide-react";
 import {
   Dialog,
@@ -23,6 +24,7 @@ import {
 import { EditTransactionForm } from "./EditTransactionForm";
 import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface TransactionRowProps {
   transaction: any;
@@ -62,7 +64,7 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
   };
 
   const handleRowClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.status-badge')) {
+    if ((e.target as HTMLElement).closest('.status-badge, .status-button')) {
       return;
     }
     setIsEditing(true);
@@ -83,6 +85,13 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
         toast.error("Erro ao atualizar status");
       }
     }
+  };
+
+  const StatusIcon = () => {
+    if (transaction.status === "Programado") {
+      return <Circle className="w-5 h-5 text-warning transition-all duration-200" />;
+    }
+    return <CheckCircle2 className="w-5 h-5 text-success transition-all duration-200" />;
   };
 
   return (
@@ -118,17 +127,22 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
           </Badge>
         </td>
         <td>
-          <Badge 
-            className={`status-badge ${getStatusColor(transaction.status)} cursor-pointer transition-all duration-200 hover:scale-105`}
-            onClick={handleStatusClick}
-          >
-            {transaction.status === "Pago" || transaction.status === "Recebido" ? (
-              <Check className="w-3 h-3 mr-1 inline" />
-            ) : (
-              <Clock4 className="w-3 h-3 mr-1 inline animate-pulse" />
-            )}
-            {transaction.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="status-button h-8 w-8 p-0"
+              onClick={handleStatusClick}
+              disabled={transaction.status !== "Programado"}
+            >
+              <StatusIcon />
+            </Button>
+            <Badge 
+              className={`status-badge ${getStatusColor(transaction.status)}`}
+            >
+              {transaction.status}
+            </Badge>
+          </div>
         </td>
         <td>
           <div className="flex items-center gap-2">

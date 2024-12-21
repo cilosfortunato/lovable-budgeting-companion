@@ -1,9 +1,8 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Calendar, FileText } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export const InstallmentFields = ({ form }: { form: any }) => {
   const isParcelado = form.watch("parcelado");
@@ -14,15 +13,12 @@ export const InstallmentFields = ({ form }: { form: any }) => {
         control={form.control}
         name="parcelado"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between p-4 bg-white/80">
+          <FormItem className="flex flex-row items-center justify-between p-4 bg-white/80 shadow-none border-none">
             <div className="space-y-0.5">
               <FormLabel className="text-base font-medium text-gray-900">Parcelado</FormLabel>
             </div>
             <FormControl>
-              <Switch
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>
           </FormItem>
         )}
@@ -36,15 +32,11 @@ export const InstallmentFields = ({ form }: { form: any }) => {
               name="parcelas"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <Calendar className="h-4 w-4 text-primary" />
-                    Quantas parcelas?
-                  </FormLabel>
+                  <FormLabel>Quantas parcelas?</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       min="1"
-                      max="60"
                       placeholder="Número de parcelas"
                       className="bg-white border-gray-200 focus:border-primary focus:ring-primary"
                       {...field}
@@ -60,10 +52,7 @@ export const InstallmentFields = ({ form }: { form: any }) => {
               name="regularidade"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <Calendar className="h-4 w-4 text-primary" />
-                    Regularidade
-                  </FormLabel>
+                  <FormLabel>Regularidade</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="bg-white border-gray-200 focus:border-primary focus:ring-primary">
@@ -89,12 +78,9 @@ export const InstallmentFields = ({ form }: { form: any }) => {
             name="observacoes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                  <FileText className="h-4 w-4 text-primary" />
-                  Observações
-                </FormLabel>
+                <FormLabel>Observações</FormLabel>
                 <FormControl>
-                  <Textarea 
+                  <Textarea
                     placeholder="Digite as observações"
                     className="bg-white border-gray-200 focus:border-primary focus:ring-primary resize-none h-24"
                     {...field}

@@ -48,6 +48,7 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Pago":
+      case "Recebido":
         return "bg-success/90 text-white hover:bg-success";
       case "Programado":
         return "bg-warning/90 text-white hover:bg-warning";
@@ -61,7 +62,6 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
   };
 
   const handleRowClick = (e: React.MouseEvent) => {
-    // Prevent row click when clicking status badge
     if ((e.target as HTMLElement).closest('.status-badge')) {
       return;
     }
@@ -72,9 +72,10 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
     e.stopPropagation();
     if (transaction.status === "Programado") {
       try {
+        const newStatus = transaction.tipo === "Despesa" ? "Pago" : "Recebido";
         await updateTransaction.mutateAsync({
           ...transaction,
-          status: "Pago"
+          status: newStatus
         });
         toast.success("Status atualizado com sucesso!");
         onUpdate();
@@ -118,13 +119,13 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
         </td>
         <td>
           <Badge 
-            className={`status-badge ${getStatusColor(transaction.status)} cursor-pointer`}
+            className={`status-badge ${getStatusColor(transaction.status)} cursor-pointer transition-all duration-200 hover:scale-105`}
             onClick={handleStatusClick}
           >
-            {transaction.status === "Pago" ? (
+            {transaction.status === "Pago" || transaction.status === "Recebido" ? (
               <Check className="w-3 h-3 mr-1 inline" />
             ) : (
-              <Clock4 className="w-3 h-3 mr-1 inline" />
+              <Clock4 className="w-3 h-3 mr-1 inline animate-pulse" />
             )}
             {transaction.status}
           </Badge>

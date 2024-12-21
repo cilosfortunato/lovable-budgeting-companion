@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ResponsibleField } from "./fields/ResponsibleField";
-import { InstallmentFields } from "./fields/InstallmentFields";
-import { AlignLeft, DollarSign, Calendar, ListFilter, Tag } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { AlignLeft, DollarSign, Calendar, ListFilter, Tag, User } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -32,6 +33,19 @@ interface TransactionFormFieldsProps {
 }
 
 export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFormFieldsProps) => {
+  const [formattedValue, setFormattedValue] = useState("");
+  
+  const { data: familyMembers = [] } = useQuery({
+    queryKey: ["familyMembers"],
+    queryFn: async () => {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .order("full_name");
+      return profiles || [];
+    },
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,17 +73,19 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
   // Format currency as user types
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
-    if (value.length > 0) {
-      value = (parseInt(value) / 100).toFixed(2);
-    } else {
-      value = "0.00";
-    }
-    form.setValue("valor", value);
+    const numericValue = parseInt(value) / 100;
+    const formattedValue = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(numericValue);
+    
+    setFormattedValue(formattedValue);
+    form.setValue("valor", numericValue.toString());
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="descricao"
@@ -125,7 +141,8 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
                 <FormControl>
                   <Input 
                     type="text" 
-                    placeholder="0,00"
+                    placeholder="R$ 0,00"
+                    value={formattedValue || field.value}
                     onChange={handleValueChange}
                     {...field}
                   />
@@ -183,10 +200,122 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
             )}
           />
 
-          <ResponsibleField form={form} />
+          <FormField
+            control={form.control}
+            name="responsavel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Responsável
+                </FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o responsável" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {familyMembers.map((member) => (
+                      <SelectItem key={member.full_name} value={member.full_name}>
+                        {member.full_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        <InstallmentFields form={form} />
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="parcelado"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg p-3 shadow-none border-none">
+                <div className="space-y-0.5">
+                  <FormLabel>Parcelado</FormLabel>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          {isParcelado && (
+            <div className="space-y-4 bg-muted/50 p-4 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="parcelas"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantas parcelas?</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          placeholder="Número de parcelas"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="regularidade"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Regularidade</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a regularidade" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Único">Único</SelectItem>
+                          <SelectItem value="Semanal">Semanal</SelectItem>
+                          <SelectItem value="Trimestral">Trimestral</SelectItem>
+                          <SelectItem value="Mensal">Mensal</SelectItem>
+                          <SelectItem value="Anual">Anual</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="observacoes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Observações</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Digite as observações"
+                        className="resize-none h-24"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+        </div>
 
         <Button type="submit" className="w-full">
           Salvar

@@ -11,6 +11,8 @@ import { ResponsibleField } from "./fields/ResponsibleField";
 import { DescriptionField } from "./fields/DescriptionField";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { StatusField } from "./fields/StatusField";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -34,6 +36,17 @@ interface NewTransactionFormProps {
 const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
   const { createTransaction } = useTransactions();
   const { session } = useAuth();
+
+  const { data: familyMembers = [] } = useQuery({
+    queryKey: ["familyMembers"],
+    queryFn: async () => {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .order("full_name");
+      return profiles || [];
+    },
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,7 +106,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <StatusField form={form} />
-              <ResponsibleField form={form} />
+              <ResponsibleField form={form} familyMembers={familyMembers} />
               <div className="col-span-1">
                 <InstallmentFields form={form} />
               </div>

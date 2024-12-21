@@ -47,12 +47,12 @@ export const useTransactions = () => {
 
       const { data, error } = await supabase
         .from("transacoes")
-        .insert({
-          ...newTransaction,
-          categoria_id: null,
-          subcategoria_id: null,
-        })
-        .select()
+        .insert(newTransaction)
+        .select(`
+          *,
+          categoria:categorias(id, nome),
+          subcategoria:subcategorias(id, nome)
+        `)
         .single();
 
       if (error) {
@@ -83,7 +83,11 @@ export const useTransactions = () => {
         .from("transacoes")
         .update(updatedTransaction)
         .eq("id", updatedTransaction.id)
-        .select()
+        .select(`
+          *,
+          categoria:categorias(id, nome),
+          subcategoria:subcategorias(id, nome)
+        `)
         .single();
 
       if (error) {

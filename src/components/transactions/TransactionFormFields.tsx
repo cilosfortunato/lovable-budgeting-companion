@@ -9,13 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { InstallmentFields } from "./fields/InstallmentFields";
 import { AlignLeft, DollarSign, Calendar, ListFilter, Tag } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
   descricao: z.string().min(3, "Descrição deve ter pelo menos 3 caracteres"),
   valor: z.string().min(1, "Valor é obrigatório"),
   tipo: z.enum(["Receita", "Despesa"]),
-  status: z.enum(["Pago", "Programado"]),
+  status: z.enum(["Pago", "Programado", "Recebido"]),
   date: z.string().min(1, "Data é obrigatória"),
   parcelado: z.boolean().default(false),
   parcelas: z.string().optional(),
@@ -46,6 +47,7 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
   });
 
   const isParcelado = form.watch("parcelado");
+  const tipoTransacao = form.watch("tipo");
 
   useEffect(() => {
     if (!isParcelado) {
@@ -53,6 +55,17 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
       form.setValue("regularidade", "Único");
     }
   }, [isParcelado, form]);
+
+  // Format currency as user types
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length > 0) {
+      value = (parseInt(value) / 100).toFixed(2);
+    } else {
+      value = "0.00";
+    }
+    form.setValue("valor", value);
+  };
 
   return (
     <Form {...form}>
@@ -103,14 +116,19 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
           <FormField
             control={form.control}
             name="valor"
-            render={({ field }) => (
+            render={({ field: { onChange, ...field } }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
                   Valor
                 </FormLabel>
                 <FormControl>
-                  <Input type="number" step="0.01" placeholder="0,00" {...field} />
+                  <Input 
+                    type="text" 
+                    placeholder="0,00"
+                    onChange={handleValueChange}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -133,8 +151,12 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Pago">Pago</SelectItem>
                     <SelectItem value="Programado">Programado</SelectItem>
+                    {tipoTransacao === "Despesa" ? (
+                      <SelectItem value="Pago">Pago</SelectItem>
+                    ) : (
+                      <SelectItem value="Recebido">Recebido</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />

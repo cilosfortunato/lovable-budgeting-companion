@@ -390,7 +390,12 @@ export type Database = {
         | "Mensal"
         | "Anual"
       status_familia: "Ativa" | "Inativa"
-      status_transacoes: "Pago" | "Programado" | "Atrasado" | "Cancelado"
+      status_transacoes:
+        | "Pago"
+        | "Recebido"
+        | "Programado"
+        | "Atrasado"
+        | "Cancelado"
       tipo_categoria:
         | "Automática"
         | "Moradia"

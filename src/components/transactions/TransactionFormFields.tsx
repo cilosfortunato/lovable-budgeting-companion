@@ -31,9 +31,10 @@ const formSchema = z.object({
 interface TransactionFormFieldsProps {
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   defaultValues?: Partial<z.infer<typeof formSchema>>;
+  planningId?: string;
 }
 
-export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFormFieldsProps) => {
+export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: TransactionFormFieldsProps) => {
   const { data: familyMembers = [] } = useQuery({
     queryKey: ["familyMembers"],
     queryFn: async () => {
@@ -43,6 +44,20 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
         .order("full_name");
       return profiles || [];
     },
+  });
+
+  const { data: planningData } = useQuery({
+    queryKey: ["planning", planningId],
+    queryFn: async () => {
+      if (!planningId) return null;
+      const { data } = await supabase
+        .from("planejamento")
+        .select("*")
+        .eq("id", planningId)
+        .single();
+      return data;
+    },
+    enabled: !!planningId,
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,6 +71,13 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
       categoria_id: "automatica",
       subcategoria_id: "automatica",
       ...defaultValues,
+      ...(planningData && {
+        descricao: planningData.item,
+        valor: planningData.estimated_value.toString(),
+        observacoes: planningData.observacoes,
+        parcelas: planningData.parcelas?.toString(),
+        regularidade: planningData.regularidade,
+      }),
     },
   });
 
@@ -82,8 +104,9 @@ export const TransactionFormFields = ({ onSubmit, defaultValues }: TransactionFo
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ResponsibleField form={form} familyMembers={familyMembers} />
-            <InstallmentFields form={form} />
           </div>
+
+          <InstallmentFields form={form} />
         </div>
 
         <Button 

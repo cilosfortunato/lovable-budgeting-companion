@@ -6,14 +6,15 @@ import { Textarea } from "@/components/ui/textarea";
 
 export const InstallmentFields = ({ form }: { form: any }) => {
   const isParcelado = form.watch("parcelado");
+  const tipoTransacao = form.watch("tipo");
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <FormField
         control={form.control}
         name="parcelado"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between p-4 bg-white/80 shadow-none border-none">
+          <FormItem className="flex flex-row items-center justify-between p-4 bg-white/80 rounded-lg border border-gray-100">
             <div className="space-y-0.5">
               <FormLabel className="text-base font-medium text-gray-900">Parcelado</FormLabel>
             </div>
@@ -25,7 +26,7 @@ export const InstallmentFields = ({ form }: { form: any }) => {
       />
 
       {isParcelado && (
-        <div className="space-y-4 bg-gray-50/50 p-4 rounded-lg">
+        <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -90,7 +91,7 @@ export const InstallmentFields = ({ form }: { form: any }) => {
               </FormItem>
             )}
           />
-        </div>
+        </>
       )}
     </div>
   );

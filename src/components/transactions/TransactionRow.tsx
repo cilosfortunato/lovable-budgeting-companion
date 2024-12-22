@@ -123,9 +123,8 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
             <Select
               value={transaction.status}
               onValueChange={handleStatusChange}
-              className="status-select min-w-[140px]"
             >
-              <SelectTrigger className={`w-full ${getStatusColor(transaction.status)}`}>
+              <SelectTrigger className={`w-[140px] ${getStatusColor(transaction.status)}`}>
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>

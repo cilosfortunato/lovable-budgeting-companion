@@ -25,6 +25,7 @@ export const EditTransactionForm = ({ transaction, onSuccess }: EditTransactionF
       url_anexos: null,
       responsavel: values.responsavel,
       Item: values.descricao,
+      conta_bancaria_id: values.conta_bancaria_id || null,
     });
 
     onSuccess();
@@ -42,6 +43,7 @@ export const EditTransactionForm = ({ transaction, onSuccess }: EditTransactionF
     regularidade: transaction.regularidade,
     observacoes: transaction.observacoes,
     responsavel: transaction.responsavel,
+    conta_bancaria_id: transaction.conta_bancaria_id,
   };
 
   return <TransactionFormFields onSubmit={onSubmit} defaultValues={defaultValues} />;

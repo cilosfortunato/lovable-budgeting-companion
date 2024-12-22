@@ -26,7 +26,7 @@ const formSchema = z.object({
   date: z.string().min(1, "Data é obrigatória"),
   parcelado: z.boolean().default(false),
   parcelas: z.string().optional(),
-  regularidade: z.enum(regularidadeEnum).optional(),
+  regularidade: z.enum(["Único", "Semanal", "Trimestral", "Mensal", "Anual"]).optional(),
   observacoes: z.string().optional(),
   categoria_id: z.string().default("automatica"),
   subcategoria_id: z.string().default("automatica"),

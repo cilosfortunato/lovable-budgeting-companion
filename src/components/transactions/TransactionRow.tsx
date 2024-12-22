@@ -10,9 +10,6 @@ import {
   Clock,
   User,
   Package,
-  Check,
-  CheckCircle2,
-  Circle
 } from "lucide-react";
 import {
   Dialog,
@@ -21,10 +18,16 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { EditTransactionForm } from "./EditTransactionForm";
 import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 
 interface TransactionRowProps {
   transaction: any;
@@ -64,34 +67,23 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
   };
 
   const handleRowClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.status-badge, .status-button')) {
+    if ((e.target as HTMLElement).closest('.status-select')) {
       return;
     }
     setIsEditing(true);
   };
 
-  const handleStatusClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (transaction.status === "Programado") {
-      try {
-        const newStatus = transaction.tipo === "Despesa" ? "Pago" : "Recebido";
-        await updateTransaction.mutateAsync({
-          ...transaction,
-          status: newStatus
-        });
-        toast.success("Status atualizado com sucesso!");
-        onUpdate();
-      } catch (error) {
-        toast.error("Erro ao atualizar status");
-      }
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      await updateTransaction.mutateAsync({
+        ...transaction,
+        status: newStatus
+      });
+      toast.success("Status atualizado com sucesso!");
+      onUpdate();
+    } catch (error) {
+      toast.error("Erro ao atualizar status");
     }
-  };
-
-  const StatusIcon = () => {
-    if (transaction.status === "Programado") {
-      return <Circle className="w-5 h-5 text-warning transition-all duration-200" />;
-    }
-    return <CheckCircle2 className="w-5 h-5 text-success transition-all duration-200" />;
   };
 
   return (
@@ -128,20 +120,23 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
         </td>
         <td>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="status-button h-8 w-8 p-0"
-              onClick={handleStatusClick}
-              disabled={transaction.status !== "Programado"}
+            <Select
+              value={transaction.status}
+              onValueChange={handleStatusChange}
+              className="status-select min-w-[140px]"
             >
-              <StatusIcon />
-            </Button>
-            <Badge 
-              className={`status-badge ${getStatusColor(transaction.status)}`}
-            >
-              {transaction.status}
-            </Badge>
+              <SelectTrigger className={`w-full ${getStatusColor(transaction.status)}`}>
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Programado">Programado</SelectItem>
+                {transaction.tipo === "Despesa" ? (
+                  <SelectItem value="Pago">Pago</SelectItem>
+                ) : (
+                  <SelectItem value="Recebido">Recebido</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
         </td>
         <td>

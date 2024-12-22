@@ -336,6 +336,7 @@ export type Database = {
       transacoes: {
         Row: {
           categoria_id: string | null
+          conta_bancaria_id: string | null
           created_at: string
           date: string
           descricao: string | null
@@ -356,6 +357,7 @@ export type Database = {
         }
         Insert: {
           categoria_id?: string | null
+          conta_bancaria_id?: string | null
           created_at?: string
           date: string
           descricao?: string | null
@@ -376,6 +378,7 @@ export type Database = {
         }
         Update: {
           categoria_id?: string | null
+          conta_bancaria_id?: string | null
           created_at?: string
           date?: string
           descricao?: string | null
@@ -400,6 +403,13 @@ export type Database = {
             columns: ["categoria_id"]
             isOneToOne: false
             referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transacoes_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "contas_bancarias"
             referencedColumns: ["id"]
           },
           {

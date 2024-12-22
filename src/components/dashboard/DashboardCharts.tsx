@@ -12,8 +12,10 @@ import {
   Pie,
   Cell,
   Legend,
+  LineChart,
+  Line,
 } from "recharts";
-import { TrendingUp, Target } from "lucide-react";
+import { TrendingUp, Target, Clock } from "lucide-react";
 
 interface DashboardChartsProps {
   monthlyData: any[];
@@ -28,6 +30,11 @@ const STATUS_COLORS = {
   Cancelado: "#ef4444",
 };
 
+const CHART_COLORS = {
+  receitas: "#22c55e",
+  despesas: "#ef4444",
+};
+
 export function DashboardCharts({
   monthlyData,
   planningStatusData,
@@ -40,7 +47,6 @@ export function DashboardCharts({
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     const observer = new ResizeObserver((entries) => {
-      // Debounce resize events
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         entries.forEach((entry) => {
@@ -49,7 +55,7 @@ export function DashboardCharts({
             height: entry.contentRect.height,
           });
         });
-      }, 100); // 100ms debounce
+      }, 100);
     });
 
     const barChart = barChartRef.current;
@@ -80,13 +86,16 @@ export function DashboardCharts({
         <div ref={barChartRef} style={{ height: getChartHeight() }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+              <Tooltip 
+                formatter={(value) => formatCurrency(Number(value))}
+                contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+              />
               <Legend />
-              <Bar name="Receitas" dataKey="receitas" fill="#22c55e" />
-              <Bar name="Despesas" dataKey="despesas" fill="#ef4444" />
+              <Bar name="Receitas" dataKey="receitas" fill={CHART_COLORS.receitas} radius={[4, 4, 0, 0]} />
+              <Bar name="Despesas" dataKey="despesas" fill={CHART_COLORS.despesas} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -121,6 +130,43 @@ export function DashboardCharts({
               <Tooltip />
               <Legend />
             </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
+
+      <Card className="p-6 lg:col-span-2">
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <Clock className="w-5 h-5" />
+          Histórico de Transações (6 meses)
+        </h2>
+        <div style={{ height: getChartHeight() }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip
+                formatter={(value) => formatCurrency(Number(value))}
+                contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+              />
+              <Legend />
+              <Line
+                type="monotone"
+                name="Receitas"
+                dataKey="receitas"
+                stroke={CHART_COLORS.receitas}
+                strokeWidth={2}
+                dot={{ fill: CHART_COLORS.receitas }}
+              />
+              <Line
+                type="monotone"
+                name="Despesas"
+                dataKey="despesas"
+                stroke={CHART_COLORS.despesas}
+                strokeWidth={2}
+                dot={{ fill: CHART_COLORS.despesas }}
+              />
+            </LineChart>
           </ResponsiveContainer>
         </div>
       </Card>

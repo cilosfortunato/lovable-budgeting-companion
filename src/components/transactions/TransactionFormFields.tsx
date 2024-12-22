@@ -28,7 +28,7 @@ type RegularidadeType = typeof regularidadeEnum[number];
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
-  descricao: z.string().min(3, "Descrição deve ter pelo menos 3 caracteres"),
+  descricao: z.string().min(3, "Item deve ter pelo menos 3 caracteres"),
   valor: z.string().min(1, "Valor é obrigatório"),
   tipo: z.enum(["Receita", "Despesa"]),
   status: z.enum(["Pago", "Programado", "Recebido"]),
@@ -106,7 +106,7 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-h-[70vh] overflow-y-auto pr-4">
         <div className="space-y-4">
           <DescriptionField form={form} />
           

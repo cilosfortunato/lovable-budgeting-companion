@@ -27,7 +27,8 @@ const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       url_anexos: null,
       responsavel: values.responsavel,
       Item: values.descricao,
-      familia_id: null, // This will be set by the database trigger
+      familia_id: null,
+      conta_bancaria_id: values.conta_bancaria_id || null,
     });
 
     onSuccess();

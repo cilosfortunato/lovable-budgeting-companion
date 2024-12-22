@@ -12,6 +12,7 @@ import { TypeField } from "./fields/TypeField";
 import { StatusField } from "./fields/StatusField";
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { InstallmentFields } from "./fields/InstallmentFields";
+import { BankAccountField } from "./fields/BankAccountField";
 
 const regularidadeEnum = ["Único", "Semanal", "Trimestral", "Mensal", "Anual"] as const;
 type RegularidadeType = typeof regularidadeEnum[number];
@@ -29,6 +30,7 @@ const formSchema = z.object({
   observacoes: z.string().optional(),
   categoria_id: z.string().default("automatica"),
   subcategoria_id: z.string().default("automatica"),
+  conta_bancaria_id: z.string().optional(),
 });
 
 interface TransactionFormFieldsProps {
@@ -107,6 +109,7 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ResponsibleField form={form} familyMembers={familyMembers} />
+            <BankAccountField form={form} />
           </div>
 
           <InstallmentFields form={form} />

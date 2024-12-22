@@ -13,13 +13,14 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { StatusField } from "./fields/StatusField";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { BankAccountField } from "./fields/BankAccountField";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
   descricao: z.string().min(3, "Descrição deve ter pelo menos 3 caracteres"),
   valor: z.string().min(1, "Valor é obrigatório"),
   tipo: z.enum(["Receita", "Despesa"]),
-  status: z.enum(["Pago", "Programado"]),
+  status: z.enum(["Pago", "Programado", "Recebido"]),
   date: z.string().min(1, "Data é obrigatória"),
   parcelado: z.boolean().default(false),
   parcelas: z.string().optional(),
@@ -27,6 +28,7 @@ const formSchema = z.object({
   observacoes: z.string().optional(),
   categoria_id: z.string().nullable(),
   subcategoria_id: z.string().nullable(),
+  conta_bancaria_id: z.string().optional(),
 });
 
 interface NewTransactionFormProps {
@@ -83,6 +85,7 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
         url_anexos: null,
         Item: values.descricao,
         familia_id: null,
+        conta_bancaria_id: values.conta_bancaria_id || null,
       });
 
       onSuccess();
@@ -107,9 +110,11 @@ const NewTransactionForm = ({ onSuccess }: NewTransactionFormProps) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <StatusField form={form} />
               <ResponsibleField form={form} familyMembers={familyMembers} />
-              <div className="col-span-1">
-                <InstallmentFields form={form} />
-              </div>
+              <BankAccountField form={form} />
+            </div>
+
+            <div className="col-span-1">
+              <InstallmentFields form={form} />
             </div>
           </div>
         </div>

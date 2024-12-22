@@ -41,6 +41,56 @@ export type Database = {
           },
         ]
       }
+      contas_bancarias: {
+        Row: {
+          agencia: string | null
+          banco: string | null
+          data_criacao: string | null
+          descricao: string | null
+          id: string
+          nome_conta: string
+          numero_conta: string | null
+          profile_id: string
+          saldo: number | null
+          status: string | null
+          tipo_conta: string
+        }
+        Insert: {
+          agencia?: string | null
+          banco?: string | null
+          data_criacao?: string | null
+          descricao?: string | null
+          id?: string
+          nome_conta: string
+          numero_conta?: string | null
+          profile_id: string
+          saldo?: number | null
+          status?: string | null
+          tipo_conta: string
+        }
+        Update: {
+          agencia?: string | null
+          banco?: string | null
+          data_criacao?: string | null
+          descricao?: string | null
+          id?: string
+          nome_conta?: string
+          numero_conta?: string | null
+          profile_id?: string
+          saldo?: number | null
+          status?: string | null
+          tipo_conta?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_profile"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       familia: {
         Row: {
           criado: string

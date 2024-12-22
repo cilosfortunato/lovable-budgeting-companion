@@ -13,6 +13,8 @@ import { StatusField } from "./fields/StatusField";
 import { ResponsibleField } from "./fields/ResponsibleField";
 import { InstallmentFields } from "./fields/InstallmentFields";
 import { BankAccountField } from "./fields/BankAccountField";
+import { Textarea } from "@/components/ui/textarea";
+import { AlignLeft } from "lucide-react";
 
 const regularidadeEnum = ["Único", "Semanal", "Trimestral", "Mensal", "Anual"] as const;
 type RegularidadeType = typeof regularidadeEnum[number];
@@ -111,6 +113,27 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
             <ResponsibleField form={form} familyMembers={familyMembers} />
             <BankAccountField form={form} />
           </div>
+
+          <FormField
+            control={form.control}
+            name="observacoes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <AlignLeft className="h-4 w-4 text-primary" />
+                  Observações
+                </FormLabel>
+                <FormControl>
+                  <Textarea 
+                    placeholder="Digite suas observações" 
+                    {...field}
+                    className="bg-white border-gray-200 focus:border-primary focus:ring-primary resize-none h-24"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <InstallmentFields form={form} />
         </div>

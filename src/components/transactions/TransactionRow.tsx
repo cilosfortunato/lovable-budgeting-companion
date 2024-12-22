@@ -18,13 +18,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { EditTransactionForm } from "./EditTransactionForm";
 import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
@@ -36,7 +29,6 @@ interface TransactionRowProps {
 
 export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const { updateTransaction } = useTransactions();
   const rowRef = useRef<HTMLTableRowElement>(null);
 
   const getTypeColor = (tipo: string) => {
@@ -67,23 +59,7 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
   };
 
   const handleRowClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.status-select')) {
-      return;
-    }
     setIsEditing(true);
-  };
-
-  const handleStatusChange = async (newStatus: string) => {
-    try {
-      await updateTransaction.mutateAsync({
-        ...transaction,
-        status: newStatus
-      });
-      toast.success("Status atualizado com sucesso!");
-      onUpdate();
-    } catch (error) {
-      toast.error("Erro ao atualizar status");
-    }
   };
 
   return (
@@ -119,30 +95,19 @@ export const TransactionRow = ({ transaction, onUpdate }: TransactionRowProps) =
           </Badge>
         </td>
         <td>
-          <div className="flex items-center gap-2">
-            <Select
-              value={transaction.status}
-              onValueChange={handleStatusChange}
-            >
-              <SelectTrigger className={`w-[140px] ${getStatusColor(transaction.status)}`}>
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Programado">Programado</SelectItem>
-                {transaction.tipo === "Despesa" ? (
-                  <SelectItem value="Pago">Pago</SelectItem>
-                ) : (
-                  <SelectItem value="Recebido">Recebido</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
+          <Badge 
+            className={`px-3 py-1 ${getStatusColor(transaction.status)}`}
+            role="button"
+            aria-label="Editar status da transação"
+          >
+            {transaction.status}
+          </Badge>
         </td>
         <td>
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-muted-foreground" />
+          <Badge variant="outline" className="bg-white">
+            <Clock className="w-4 h-4 text-muted-foreground mr-2" />
             {transaction.regularidade || '-'}
-          </div>
+          </Badge>
         </td>
         <td>
           <div className="flex items-center gap-2">

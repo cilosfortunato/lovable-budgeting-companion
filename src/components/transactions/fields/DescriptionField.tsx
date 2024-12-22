@@ -1,6 +1,6 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { AlignLeft } from "lucide-react";
+import { Package } from "lucide-react";
 
 export const DescriptionField = ({ form }: { form: any }) => {
   return (
@@ -10,12 +10,12 @@ export const DescriptionField = ({ form }: { form: any }) => {
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2 text-sm font-medium">
-            <AlignLeft className="h-4 w-4 text-primary" />
-            Descrição
+            <Package className="h-4 w-4 text-primary" />
+            Item
           </FormLabel>
           <FormControl>
             <Input 
-              placeholder="Digite uma descrição" 
+              placeholder="Digite o item" 
               {...field}
               className="bg-white border-gray-200 focus:border-primary focus:ring-primary"
             />

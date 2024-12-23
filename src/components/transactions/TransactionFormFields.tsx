@@ -21,7 +21,8 @@ import { ResponsibleField } from "./fields/ResponsibleField";
 import { InstallmentFields } from "./fields/InstallmentFields";
 import { BankAccountField } from "./fields/BankAccountField";
 import { Textarea } from "@/components/ui/textarea";
-import { AlignLeft } from "lucide-react";
+import { AlignLeft, ListFilter, Tag, Repeat } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const regularidadeEnum = ["Único", "Semanal", "Trimestral", "Mensal", "Anual"] as const;
 type RegularidadeType = typeof regularidadeEnum[number];
@@ -137,6 +138,34 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
                     className="bg-white border-gray-200 focus:border-primary focus:ring-primary resize-none h-24"
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="regularidade"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <Repeat className="h-4 w-4 text-primary" />
+                  Regularidade
+                </FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="bg-white border-gray-200 focus:border-primary focus:ring-primary">
+                      <SelectValue placeholder="Selecione a regularidade" className="text-center" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {regularidadeEnum.map((option) => (
+                      <SelectItem key={option} value={option} className="text-center">
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

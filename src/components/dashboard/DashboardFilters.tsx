@@ -62,6 +62,56 @@ export function DashboardFilters({
           </div>
         </div>
       </div>
+
+      {/* Filters */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Select value={selectedStatus} onValueChange={onStatusChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="Pago">Pago</SelectItem>
+            <SelectItem value="Programado">Programado</SelectItem>
+            <SelectItem value="Recebido">Recebido</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={selectedResponsible} onValueChange={onResponsibleChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Responsável" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">Todos</SelectItem>
+            {profiles.map((profile) => (
+              <SelectItem key={profile.full_name} value={profile.full_name}>
+                {profile.full_name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={selectedRegularity} onValueChange={onRegularityChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Regularidade" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="Único">Único</SelectItem>
+            <SelectItem value="Semanal">Semanal</SelectItem>
+            <SelectItem value="Mensal">Mensal</SelectItem>
+            <SelectItem value="Trimestral">Trimestral</SelectItem>
+            <SelectItem value="Anual">Anual</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Input
+          placeholder="Buscar por item..."
+          value={searchItem}
+          onChange={(e) => onSearchItemChange(e.target.value)}
+          className="bg-white"
+        />
+      </div>
     </div>
   );
 }

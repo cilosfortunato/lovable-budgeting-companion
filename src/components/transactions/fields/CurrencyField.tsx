@@ -22,26 +22,22 @@ export const CurrencyField = ({ form, defaultValue }: { form: any; defaultValue?
   };
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Remove all non-numeric characters except comma
     let value = e.target.value.replace(/[^\d,]/g, "");
     
-    // Replace comma with dot for calculation
-    value = value.replace(",", ".");
-    
-    // Convert to number considering the last 2 digits as cents
-    const parts = value.split(".");
-    let numericValue: number;
-    
-    if (parts.length > 1) {
-      // If there's a decimal part
-      const integerPart = parts[0] || "0";
-      const decimalPart = parts[1].slice(0, 2).padEnd(2, "0");
-      numericValue = parseFloat(`${integerPart}.${decimalPart}`);
-    } else {
-      // If it's a whole number, convert to cents
-      numericValue = parseFloat(value) / 100;
+    if (value === "") {
+      setDisplayValue("");
+      form.setValue("valor", "");
+      return;
     }
 
+    // Handle integer values
+    if (!value.includes(",")) {
+      value = value + ",00";
+    }
+
+    // Convert comma to dot for calculation
+    const numericValue = parseFloat(value.replace(",", "."));
+    
     if (!isNaN(numericValue)) {
       formatAndDisplayValue(numericValue);
       form.setValue("valor", numericValue.toString());

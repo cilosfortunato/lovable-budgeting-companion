@@ -21,10 +21,25 @@ import {
 } from "@/components/ui/dialog";
 import { useTransactions } from "@/hooks/useTransactions";
 import { TransactionRow } from "@/components/transactions/TransactionRow";
+import { TransactionFilters } from "@/components/transactions/TransactionFilters";
 
 const Transactions = () => {
   const [open, setOpen] = useState(false);
   const { transactions, isLoading } = useTransactions();
+  const [filters, setFilters] = useState({
+    tipo: "all",
+    status: "all",
+    regularidade: "all",
+    responsavel: "all",
+  });
+
+  const filteredTransactions = transactions.filter((transaction) => {
+    if (filters.tipo !== "all" && transaction.tipo !== filters.tipo) return false;
+    if (filters.status !== "all" && transaction.status !== filters.status) return false;
+    if (filters.regularidade !== "all" && transaction.regularidade !== filters.regularidade) return false;
+    if (filters.responsavel !== "all" && transaction.responsavel !== filters.responsavel) return false;
+    return true;
+  });
 
   return (
     <div className="container max-w-7xl mx-auto px-4 py-12">
@@ -56,6 +71,12 @@ const Transactions = () => {
         </Dialog>
       </div>
       
+      <TransactionFilters 
+        onFilterChange={(newFilters) => {
+          setFilters(prev => ({ ...prev, ...newFilters }));
+        }} 
+      />
+
       <Card className="overflow-hidden shadow-md bg-gradient-to-br from-white to-gray-50">
         <div className="relative overflow-x-auto">
           <Table>
@@ -80,14 +101,14 @@ const Transactions = () => {
                     </div>
                   </TableCell>
                 </TableRow>
-              ) : transactions.length === 0 ? (
+              ) : filteredTransactions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8">
                     <p className="text-muted-foreground">Nenhuma transação registrada</p>
                   </TableCell>
                 </TableRow>
               ) : (
-                transactions.map((transaction) => (
+                filteredTransactions.map((transaction) => (
                   <TransactionRow 
                     key={transaction.id} 
                     transaction={transaction}

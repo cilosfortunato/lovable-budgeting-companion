@@ -2,7 +2,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Repeat } from "lucide-react";
+import { Repeat, Hash } from "lucide-react";
 
 const regularidadeEnum = ["Único", "Semanal", "Trimestral", "Mensal", "Anual"] as const;
 
@@ -33,7 +33,10 @@ export const InstallmentFields = ({ form }: { form: any }) => {
             name="parcelas"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quantas parcelas?</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <Hash className="h-4 w-4 text-primary" />
+                  Quantas parcelas?
+                </FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -65,7 +68,10 @@ export const InstallmentFields = ({ form }: { form: any }) => {
                   <SelectContent>
                     {regularidadeEnum.map((option) => (
                       <SelectItem key={option} value={option} className="text-center">
-                        {option}
+                        <span className="flex items-center gap-2">
+                          <Repeat className="h-4 w-4 text-primary" />
+                          {option}
+                        </span>
                       </SelectItem>
                     ))}
                   </SelectContent>

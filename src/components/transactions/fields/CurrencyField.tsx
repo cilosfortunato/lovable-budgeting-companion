@@ -30,21 +30,24 @@ export const CurrencyField = ({ form, defaultValue }: { form: any; defaultValue?
       return;
     }
 
-    // Handle comma as decimal separator
-    if (value.includes(",")) {
-      const parts = value.split(",");
-      if (parts[1].length > 2) {
-        parts[1] = parts[1].slice(0, 2);
-        value = parts.join(",");
+    // Handle integer values
+    if (!value.includes(",")) {
+      const numericValue = parseInt(value, 10);
+      if (!isNaN(numericValue)) {
+        formatAndDisplayValue(numericValue);
+        form.setValue("valor", numericValue.toString());
       }
-    } else {
-      // If no comma, treat as whole number
-      value = value + ",00";
+      return;
     }
 
-    // Convert comma to dot for internal value
+    // Handle decimal values
+    const parts = value.split(",");
+    if (parts[1]?.length > 2) {
+      parts[1] = parts[1].slice(0, 2);
+      value = parts.join(",");
+    }
+
     const numericValue = parseFloat(value.replace(",", "."));
-    
     if (!isNaN(numericValue)) {
       formatAndDisplayValue(numericValue);
       form.setValue("valor", numericValue.toString());

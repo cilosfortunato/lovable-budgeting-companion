@@ -23,6 +23,8 @@ import { BankAccountField } from "./fields/BankAccountField";
 import { Textarea } from "@/components/ui/textarea";
 import { AlignLeft } from "lucide-react";
 
+type RegularidadeType = "Único" | "Semanal" | "Trimestral" | "Mensal" | "Anual";
+
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
   descricao: z.string().min(3, "Item deve ter pelo menos 3 caracteres"),

@@ -70,7 +70,7 @@ export function DashboardFilters({
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="Pago">Pago</SelectItem>
             <SelectItem value="Programado">Programado</SelectItem>
             <SelectItem value="Recebido">Recebido</SelectItem>
@@ -82,7 +82,7 @@ export function DashboardFilters({
             <SelectValue placeholder="Responsável" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
             {profiles.map((profile) => (
               <SelectItem key={profile.full_name} value={profile.full_name}>
                 {profile.full_name}
@@ -96,7 +96,7 @@ export function DashboardFilters({
             <SelectValue placeholder="Regularidade" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="Único">Único</SelectItem>
             <SelectItem value="Semanal">Semanal</SelectItem>
             <SelectItem value="Mensal">Mensal</SelectItem>

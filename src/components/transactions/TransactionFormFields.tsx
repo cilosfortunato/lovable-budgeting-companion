@@ -154,7 +154,7 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
                 </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-white border-gray-200 focus:border-primary focus:ring-primary">
+                    <SelectTrigger className="bg-primary text-white border-0 text-center">
                       <SelectValue placeholder="Selecione a regularidade" className="text-center" />
                     </SelectTrigger>
                   </FormControl>

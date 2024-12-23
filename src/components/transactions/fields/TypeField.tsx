@@ -10,18 +10,18 @@ export const TypeField = ({ form }: { form: any }) => {
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            <ListFilter className="h-4 w-4" />
+            <ListFilter className="h-4 w-4 text-primary" />
             Tipo
           </FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o tipo" />
+              <SelectTrigger className="bg-primary text-white border-0 text-center">
+                <SelectValue placeholder="Selecione o tipo" className="text-center" />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Receita">Receita</SelectItem>
-              <SelectItem value="Despesa">Despesa</SelectItem>
+              <SelectItem value="Receita" className="text-center">Receita</SelectItem>
+              <SelectItem value="Despesa" className="text-center">Despesa</SelectItem>
             </SelectContent>
           </Select>
           <FormMessage />

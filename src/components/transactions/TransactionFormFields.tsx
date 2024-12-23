@@ -21,11 +21,7 @@ import { ResponsibleField } from "./fields/ResponsibleField";
 import { InstallmentFields } from "./fields/InstallmentFields";
 import { BankAccountField } from "./fields/BankAccountField";
 import { Textarea } from "@/components/ui/textarea";
-import { AlignLeft, ListFilter, Tag, Repeat } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-const regularidadeEnum = ["Único", "Semanal", "Trimestral", "Mensal", "Anual"] as const;
-type RegularidadeType = typeof regularidadeEnum[number];
+import { AlignLeft } from "lucide-react";
 
 const formSchema = z.object({
   responsavel: z.string().min(1, "Responsável é obrigatório"),
@@ -96,15 +92,6 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
     },
   });
 
-  const isParcelado = form.watch("parcelado");
-
-  useEffect(() => {
-    if (!isParcelado) {
-      form.setValue("parcelas", undefined);
-      form.setValue("regularidade", "Único");
-    }
-  }, [isParcelado, form]);
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-h-[70vh] overflow-y-auto pr-4">
@@ -138,34 +125,6 @@ export const TransactionFormFields = ({ onSubmit, defaultValues, planningId }: T
                     className="bg-white border-gray-200 focus:border-primary focus:ring-primary resize-none h-24"
                   />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="regularidade"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-2">
-                  <Repeat className="h-4 w-4 text-primary" />
-                  Regularidade
-                </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-primary text-white border-0 text-center">
-                      <SelectValue placeholder="Selecione a regularidade" className="text-center" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {regularidadeEnum.map((option) => (
-                      <SelectItem key={option} value={option} className="text-center">
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}

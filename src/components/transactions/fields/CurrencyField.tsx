@@ -30,12 +30,19 @@ export const CurrencyField = ({ form, defaultValue }: { form: any; defaultValue?
       return;
     }
 
-    // Handle integer values
-    if (!value.includes(",")) {
+    // Handle comma as decimal separator
+    if (value.includes(",")) {
+      const parts = value.split(",");
+      if (parts[1].length > 2) {
+        parts[1] = parts[1].slice(0, 2);
+        value = parts.join(",");
+      }
+    } else {
+      // If no comma, treat as whole number
       value = value + ",00";
     }
 
-    // Convert comma to dot for calculation
+    // Convert comma to dot for internal value
     const numericValue = parseFloat(value.replace(",", "."));
     
     if (!isNaN(numericValue)) {
